@@ -125,11 +125,24 @@ function pressenter(e, func) {
 		func();
 }
 
+function checkvalid() {
+	if(!/^[A-Za-z0-9]*$/.test($('#register-inputName').val())) {
+		$('#register-message').parent().css('margin-top', '88px');
+		$('#register-error').attr('str', 'name invalid');
+		showmessage('register-message', 'name invalid');
+		return;
+	}
+	else {
+		$('#register-message').slideUp();
+	}
+}
+
 function loadfailed() {
 	if(loadDone)
 		return;
 	failed = true;
 	$('#loading-init').remove();
+	$('#login-error').attr('str', 'loadfailed');
 	showmessage('login-message', 'loadfailed');
 }
 
@@ -304,6 +317,7 @@ var socket = io.connect(SOCKET_IO);
 
 socket.on('unauthorized', function(){
 	backtologin();
+	$('#login-error').attr('str', 'needrelogin');
 	showmessage('login-message', 'needrelogin', 'error');
 
 	if(!window.joinedARoom){
@@ -347,8 +361,10 @@ socket.on('connect', function(){
 
 socket.on('register', function(data){
 	if(data.err){
+		$('#register-error').attr('str', data.err);
 		showmessage('register-message', data.err, 'error');
 	}else{
+		$('#register-error').attr('str', 'registerok');
 		showmessage('register-message', 'registerok');
 		$('#register-inputName').val('');
 		$('#register-inputPassword').val('');
@@ -363,6 +379,7 @@ socket.on('login', function(data){
 		if(data.err == 'expired') {
 			$.removeCookie('sid');
 		} else {
+			$('#login-error').attr('str', data.err);
 			showmessage('login-message', data.err, 'error');
 		}
 	}else{
@@ -500,6 +517,7 @@ function renamedone(data) {
 
 socket.on('share', function(data){
 	if(data.err){
+		$('#share-error').attr('str', data.err);
 		showmessage('share-message', data.err, 'error');
 		operationLock = false;
 		removeloading('share-buttons');
@@ -513,6 +531,7 @@ socket.on('share', function(data){
 
 socket.on('unshare', function(data){
 	if(data.err){
+		$('#share-error').attr('str', data.err);
 		showmessage('share-message', data.err, 'error');
 		operationLock = false;
 		removeloading('share-buttons');
@@ -526,6 +545,7 @@ socket.on('unshare', function(data){
 
 socket.on('avatar', function(data){
 	if(data.err){
+		$('#changeavatar-error').attr('str', data.err);
 		showmessage('changeavatar-message', data.err, 'error');
 	} else {
 		currentUser.avatar = data.url;
@@ -534,12 +554,37 @@ socket.on('avatar', function(data){
 		$('img.user-' + currentUser.name).attr('src', currentUser.avatar);
 		memberlist.refreshpopover(currentUser);
 		memberlistdoc.refreshpopover(currentUser);
+		$('#changeavatar-error').attr('str', 'changeavatarok');
 		showmessage('changeavatar-message', 'changeavatarok');
 	}
 	operationLock = false;
 });
 
 ////////////////////// click event //////////////////////////////
+
+function translate() {
+	lang = (localStorage.getItem('lang') == 'us-en' ? 'zh-cn' : 'us-en');
+	transinto[lang]();
+	localStorage.setItem('lang', lang);
+
+	$('[localization]').html(function(index, old) {
+		if(strings[$(this).attr('str')])
+			return strings[$(this).attr('str')];
+		return old;
+	});
+	
+	$('[title]').attr('title', function(index, old) {
+		if(strings[$(this).attr('str')])
+			return strings[$(this).attr('str')];
+		return old;
+	});
+
+	if((!Browser.chrome || parseInt(Browser.chrome) < 18) &&
+		(!Browser.opera || parseInt(Browser.opera) < 12)) {
+		$('#voice-on').removeAttr('title');
+		$('#voice-on').attr('data-content', strings['novoice']);
+	}
+}
 
 function loginview() {
 	if(viewswitchLock)
@@ -588,6 +633,7 @@ function login() {
 	var name = $('#login-inputName').val();
 	var pass = $('#login-inputPassword').val();
 	if(name == '') {
+		$('#login-error').attr('str', 'pleaseinput');
 		showmessage('login-message', 'pleaseinput', 'error');
 		return;
 	}
@@ -613,18 +659,26 @@ function register() {
 	var pass = $('#register-inputPassword').val();
 	var confirm = $('#register-confirmPassword').val();
 	if(!/^[A-Za-z0-9]*$/.test(name)) {
+		$('#register-message').parent().css('margin-top', '88px');
+		$('#register-error').attr('str', 'name invalid');
 		showmessage('register-message', 'name invalid');
 		return;
 	}
 	if(name.length < 6 || name.length > 20) {
+		$('#register-message').parent().css('margin-top', '88px');
+		$('#register-error').attr('str', 'namelength');
 		showmessage('register-message', 'namelength');
 		return;
 	}
 	if(pass.length > 32){
+		$('#register-message').parent().css('margin-top', '138px');
+		$('#register-error').attr('str', 'passlength');
 		showmessage('register-message', 'passlength');
 		return;
 	}
 	if(pass != confirm) {
+		$('#register-message').parent().css('margin-top', '188px');
+		$('#register-error').attr('str', 'doesntmatch');
 		showmessage('register-message', 'doesntmatch');
 		return;
 	}
@@ -792,6 +846,7 @@ var rename = function(){;};
 function share(){
 	var name = $('#share-inputName').val();
 	if(name == '') {
+		$('#share-error').attr('str', 'inputusername');
 		showmessage('share-message', 'inputusername', 'error');
 		return;
 	}
@@ -808,6 +863,7 @@ function share(){
 function unshare() {
 	var selected = userlist.getselection();
 	if(!selected) {
+		$('#share-error').attr('str', 'selectuser');
 		showmessage('share-message', 'selectuser', 'error');
 		return;
 	}
@@ -839,6 +895,7 @@ function shareopen(o) {
 
 function changeavatar(o) {
 	if(o.files.length < 0) {
+		$('#changeavatar-error').attr('str', 'selectuser');
 		showmessage('changeavatar-message', 'selectuser', 'error');
 		return;
 	}
@@ -851,12 +908,14 @@ function changeavatar(o) {
 	
 	reader.onloadend = function() {
 		if (reader.error) {
+			$('#changeavatar-error').attr('str', reader.err);
 			showmessage('changeavatar-message', reader.error, 'error');
 			operationLock = false;
 		} else {
 			var s = reader.result;
 			var t = s.substr(s.indexOf('base64') + 7);
 			if(t.length > 0x100000) {
+				$('#changeavatar-error').attr('str', 'too large');
 				showmessage('changeavatar-message', 'too large', 'error');
 			}
 			socket.emit('avatar', {
@@ -1023,13 +1082,18 @@ $(document).ready(function() {
 		$('#share-inputName').focus();
 	});
 	
+	if(localStorage.getItem('lang') == null) localStorage.setItem('lang', 'zh-cn');
+	transinto[localStorage.getItem('lang')]();
+
 	$('[localization]').html(function(index, old) {
+		$(this).attr('str', old);
 		if(strings[old])
 			return strings[old];
 		return old;
 	});
 	
 	$('[title]').attr('title', function(index, old) {
+		$(this).attr('str', old);
 		if(strings[old])
 			return strings[old];
 		return old;
@@ -1056,11 +1120,11 @@ $(document).ready(function() {
 		$('#voice-on').removeAttr('title');
 		$('#voice-on').popover({
 			html: true,
-			content: strings['novoice'],
 			placement: 'left',
 			trigger: 'hover',
 			container: 'body'
 		});
+		$('#voice-on').attr('data-content', strings['novoice']);
 	}
 
 	resize();

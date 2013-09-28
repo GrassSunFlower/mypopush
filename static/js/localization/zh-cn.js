@@ -1,4 +1,8 @@
-var strings = {
+transinto = {};
+strings = {};
+
+transinto['zh-cn'] = function(){
+strings = {
 	'hide-title'                    :'收起',
 	'show-title'                    :'展开',
 	'pleaseinput'                   :'请输入用户名',
@@ -109,5 +113,7 @@ var strings = {
 	'finish-title'                  :'跳出过程',
 	'voice'                         :'语音',
 	'removeexpression'              :'删除监视',
-	'novoice'                       :'该浏览器不支持语音，请使用<br />Chrome 18+或Opera 12+'
+	'novoice'                       :'该浏览器不支持语音，请使用<br />Chrome 18+或Opera 12+',
+	'translation'			:'点击此处翻译成英文'
+};
 };
