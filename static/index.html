@@ -48,11 +48,11 @@
 						<img height="32" width="32" src="#" id="nav-avatar" />
 						</a>
 						<ul class="dropdown-menu">
-							<li><a href="#changepassword" data-toggle="modal" onclick="changepasswordopen()" localization>changepassword</a></li>
-							<li><a href="#changeavatar" data-toggle="modal" onclick="changeavataropen()" localization>changeavatar</a></li>
+							<li><a id="changePassWrd" href="#changepassword" data-toggle="modal" onclick="changepasswordopen()" localization>changepassword</a></li>
+							<li><a href="#changeavatar" id="changeacatar1" data-toggle="modal" onclick="changeavataropen()" localization>changeavatar</a></li>
 							<li class="dropdown-submenu pull-left" >
 								<a localization onclick="changeWord" id="openChangeWord">changeword</a>
-								<ul class="dropdown-menu" id="openChangeShow">
+								<ul class="dropdown-menu" id="openChangeShow" style="display:none">
 									<li><a tabindex ='-1' onclick="changeBubbler()">Bubbler+One</a></li>
 									<li onclick="changeTangerine"><a herf="#" onclick="changeTangerine()">Tangerine</a></li>
 								

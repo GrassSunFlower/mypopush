@@ -9,7 +9,6 @@ var newfiletype = 'doc';
 var filelisterror = function(){;};
 var docshowfilter = function(o){ return true; };
 var filelist;
-
 var userlist;
 var currentsharedoc;
 
@@ -1026,7 +1025,9 @@ function backto(n) {
 /////////////////////// initialize ///////////////////////////
 
 $(document).ready(function() {
-	
+	$("#openChangeWord").hover(function(){$("#openChangeShow").show();},function(){});
+	$("#changeacatar1").hover(function(){$("#openChangeShow").hide();},function(){});
+	$("#changePassWrd").hover(function(){$("#openChangeShow").hide();},function(){});
 	setTimeout('loadfailed()', 10000);
 
     CodeMirror.on(window, "resize", function() {
