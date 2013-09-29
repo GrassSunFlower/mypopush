@@ -8,6 +8,7 @@ var Runner = require('./models/runner');
 var Debugger = require('./models/debugger');
 var DEBUG = require('./package.json').debug;
 
+
 var session = {};
 var users = {};
 var rooms = {};
