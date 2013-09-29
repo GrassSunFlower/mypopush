@@ -111,6 +111,7 @@ strings = {
 	'voice'                         :'Voice Chat',
 	'removeexpression'              :'Remove the monitor',
 	'novoice'                       :'The browser do not support<br />the voice chat. Please use<br />Chrome 18+ or Opera 12+',
-	'translation'			:'Click here to translate into Chinese'
+	'translation'			:'Click here to translate into Chinese',
+	'changeword'			:'Change font'
 };
 };

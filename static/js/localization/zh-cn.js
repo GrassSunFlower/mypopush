@@ -114,6 +114,7 @@ strings = {
 	'voice'                         :'语音',
 	'removeexpression'              :'删除监视',
 	'novoice'                       :'该浏览器不支持语音，请使用<br />Chrome 18+或Opera 12+',
-	'translation'			:'点击此处翻译成英文'
+	'translation'			:'点击此处翻译成英文',
+	'changeword'			:'更改字体'
 };
 };
