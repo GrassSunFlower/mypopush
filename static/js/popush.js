@@ -585,7 +585,12 @@ function translate() {
 		$('#voice-on').attr('data-content', strings['novoice']);
 	}
 }
-
+function changeTangerine(){
+	$("*").css("font-family","'Tangerine'");
+}
+function changeBubbler(){
+	$("*").css("font-family","Amarante");
+}
 function loginview() {
 	if(viewswitchLock)
 		return;
@@ -1021,6 +1026,7 @@ function backto(n) {
 /////////////////////// initialize ///////////////////////////
 
 $(document).ready(function() {
+	
 	setTimeout('loadfailed()', 10000);
 
     CodeMirror.on(window, "resize", function() {
