@@ -2,10 +2,13 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Popushtest</title>
+	<title>Popush</title>
+
 	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
 	<link href="css/codemirror.css" rel="stylesheet" media="screen" />
 	<link href="css/popush.css" rel="stylesheet" media="screen" />
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Tangerine&Amarante&effect=shadow-multiple">
+<link href="css/flat-ui.css" rel="stylesheet" media="screen"/>
 	<script type="text/javascript" src="js/conf.js"></script>
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery.cookie.js"></script>
@@ -25,7 +28,7 @@
 	<script type="text/javascript" src="js/room.js"></script>
 </head>
 <body style="display:none;">
-	<div class="hero-unit" id="big-one">
+	<div class="hero-unit" id="big-one" style="padding-top:30px;padding-bottom:20px;">
 		<div class="container">
 			<div class="row">
 				<h1>&nbsp;</h1>
@@ -47,6 +50,14 @@
 						<ul class="dropdown-menu">
 							<li><a href="#changepassword" data-toggle="modal" onclick="changepasswordopen()" localization>changepassword</a></li>
 							<li><a href="#changeavatar" data-toggle="modal" onclick="changeavataropen()" localization>changeavatar</a></li>
+							<li class="dropdown-submenu pull-left" >
+								<a localization onclick="changeWord" id="openChangeWord">changeword</a>
+								<ul class="dropdown-menu" id="openChangeShow">
+									<li><a tabindex ='-1' onclick="changeBubbler()">Bubbler+One</a></li>
+									<li onclick="changeTangerine"><a herf="#" onclick="changeTangerine()">Tangerine</a></li>
+								
+								</ul>
+							</li>
 							<li class="divider"></li>
 							<li><a href="javascript:;" onclick="logout()" localization>logout</a></li>
 						</ul>
@@ -56,23 +67,27 @@
 		</div>
 	</div>
 	
-	<div class="container-fluid">
+	<div class="container-fluid" style="margin-top:50px">
 
 		<div class="row-fluid" id="login">
 			<div class="span4 offset4">
-				<h2 style="text-align:center" class="blink" localization>login</h2>
+				
+				<h2 style="text-align:center" localization>login</h2>
 				<hr />
-				<div id="login-box" class="form-horizontal" style="min-width:420px;position:relative;">
-					<div class="control-group">
+				<div id="login-box" class=" form-horizontal login-form " style="min-width:420px;position:relative;">
+					<div class="control-group ">
+					
 						<label class="control-label" for="login-inputName" localization>username</label>
 						<div class="controls">
-							<input type="text" id="login-inputName" onkeydown="pressenter(arguments[0],login)" />
+							<input class="login-field"  type="text" id="login-inputName" onkeydown="pressenter(arguments[0],login)" />
+<label class="login-field-icon fui-man-15" for="login-inputName"></label>
 						</div>
 					</div>
 					<div class="control-group">
-						<label class="control-label" for="login-inputPassword" localization>password</label>
+						<label class="control-label " for="login-inputPassword"  localization>password</label>
 						<div class="controls">
-							<input type="password" id="login-inputPassword" onkeydown="pressenter(arguments[0],login)" />
+							<input class ="login-field" type="password" id="login-inputPassword" onkeydown="pressenter(arguments[0],login)" />
+<label class="login-field-icon fui-lock-16" for="login-pass"></label>
 						</div>
 					</div>
 					<div class="control-group hide" id="login-padding">
@@ -81,8 +96,8 @@
 					<div class="control-group">
 						<p align="center" id="loading-init" style="margin:1px 0 2px 0"><img src="images/init.gif"/></p>
 						<div class="controls hide" id="login-control" style="display:none;">
-							<button type="submit" class="btn" onclick="login();" localization>login</button>
-							<a class="switch-rel" href="javascript:;" onclick="registerview()" localization>register</a>
+							<button type="submit" class="btn pull-right" onclick="login();" localization>login</button>
+							<a class="" href="javascript:;" onclick="registerview()" localization>register</a>
 						</div>
 					</div>
 				</div>
@@ -99,7 +114,7 @@
 			<div class="span4 offset4">
 				<h2 style="text-align:center" class="blink" localization>register</h2>
 				<hr />
-				<div id="register-box" class="form-horizontal" style="min-width:420px;position:relative;">
+				<div id="register-box" class="form-horizontal login-form" style="min-width:420px;position:relative;">
 					<div class="control-group">
 						<label class="control-label" for="register-inputName" localization>username</label>
 						<div class="controls">
@@ -248,9 +263,11 @@
 		
 		<div id="footer" class="row-fluid">
 			<hr />
-			<span class="span4">
+			<span class="span2">
+				<div>
 				<a href="javascript:;" onclick="translate()" style="text-align:left" localization>translation</a>
-				<p> &nbsp; </p>
+				</div>
+		
 			</span>
 			<span class="span7">
 				<p style="text-align:right" localization>popushteam</p>
