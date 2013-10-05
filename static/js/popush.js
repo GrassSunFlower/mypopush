@@ -585,10 +585,12 @@ function translate() {
 	}
 }
 function changeTangerine(){
-	$("*").css("font-family","'Tangerine'");
+	$("*").css("font-family","'Cantora One'");
+	$("#OpenChangeShow").hide();
 }
 function changeBubbler(){
 	$("*").css("font-family","Amarante");
+	$("#OpenChangeShow").hide();
 }
 function loginview() {
 	if(viewswitchLock)
@@ -1028,6 +1030,7 @@ $(document).ready(function() {
 	$("#openChangeWord").hover(function(){$("#openChangeShow").show();},function(){});
 	$("#changeacatar1").hover(function(){$("#openChangeShow").hide();},function(){});
 	$("#changePassWrd").hover(function(){$("#openChangeShow").hide();},function(){});
+	$("#logoutId").hover(function(){$("#openChangeShow").hide();},function(){});
 	setTimeout('loadfailed()', 10000);
 
     CodeMirror.on(window, "resize", function() {
@@ -1089,7 +1092,7 @@ $(document).ready(function() {
 		$('#share-inputName').focus();
 	});
 	
-	if(localStorage.getItem('lang') == null) localStorage.setItem('lang', 'zh-cn');
+	if(localStorage.getItem('lang')!= 'zh-cn') localStorage.setItem('lang', 'zh-cn');
 	transinto[localStorage.getItem('lang')]();
 
 	$('[localization]').html(function(index, old) {
