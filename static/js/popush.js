@@ -313,6 +313,7 @@ function backtologin() {
 	$('#filecontrol').hide();
 	$('#editor').hide();
 	$('#login').fadeIn('fast');
+	$('#footer').fadeIn('fast');
 	$('.modal').modal('hide');
 }
 
