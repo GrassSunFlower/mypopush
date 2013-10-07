@@ -125,10 +125,17 @@ function pressenter(e, func) {
 }
 
 function checkvalid() {
-	if(!/^[A-Za-z0-9]*$/.test($('#register-inputName').val())) {
-		$('#register-message').parent().css('margin-top', '88px');
+	var name = $('#register-inputName').val();
+	if(!/^[A-Za-z0-9]*$/.test(name)) {
+		$('#register-message').parent().css('margin-top', '128px');
 		$('#register-error').attr('str', 'name invalid');
 		showmessage('register-message', 'name invalid');
+		return;
+	}
+	else if(name.length < 6 || name.length > 20) {
+		$('#register-message').parent().css('margin-top', '128px');
+		$('#register-error').attr('str', 'namelength');
+		showmessage('register-message', 'namelength');
 		return;
 	}
 	else {
@@ -665,25 +672,25 @@ function register() {
 	var pass = $('#register-inputPassword').val();
 	var confirm = $('#register-confirmPassword').val();
 	if(!/^[A-Za-z0-9]*$/.test(name)) {
-		$('#register-message').parent().css('margin-top', '88px');
+		$('#register-message').parent().css('margin-top', '128px');
 		$('#register-error').attr('str', 'name invalid');
 		showmessage('register-message', 'name invalid');
 		return;
 	}
 	if(name.length < 6 || name.length > 20) {
-		$('#register-message').parent().css('margin-top', '88px');
+		$('#register-message').parent().css('margin-top', '128px');
 		$('#register-error').attr('str', 'namelength');
 		showmessage('register-message', 'namelength');
 		return;
 	}
 	if(pass.length > 32){
-		$('#register-message').parent().css('margin-top', '138px');
+		$('#register-message').parent().css('margin-top', '163px');
 		$('#register-error').attr('str', 'passlength');
 		showmessage('register-message', 'passlength');
 		return;
 	}
 	if(pass != confirm) {
-		$('#register-message').parent().css('margin-top', '188px');
+		$('#register-message').parent().css('margin-top', '198px');
 		$('#register-error').attr('str', 'doesntmatch');
 		showmessage('register-message', 'doesntmatch');
 		return;

@@ -102,7 +102,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="span3" style="margin-top:88px;margin-left:20px;width:250px">
+			<div class="span3" style="margin-top:128px;margin-left:20px;width:250px">
 				<div class="alert hide" id="login-message">
 					<button type="button" class="close" onclick="$('#login-message').slideUp()">&times;</button>
 					<span id="login-error" localization>Nothing here</span>
@@ -118,7 +118,7 @@
 					<div class="control-group">
 						<label class="control-label" for="register-inputName" localization>username</label>
 						<div class="controls">
-							<input type="text" id="register-inputName" oninput="checkvalid()" onkeydown="pressenter(arguments[0],register)" />
+							<input type="text" id="register-inputName" oninput="checkvalid()" onfocus="checkvalid()" onkeydown="pressenter(arguments[0],register)" />
 						</div>
 					</div>
 					<div class="control-group">
@@ -141,7 +141,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="span3" style="margin-top:88px;margin-left:20px;width:250px">
+			<div class="span3" style="margin-left:20px;width:250px">
 				<div class="alert hide" id="register-message">
 					<button type="button" class="close" onclick="$('#register-message').slideUp()">&times;</button>
 					<span id="register-error" localization>Nothing here</span>
@@ -265,7 +265,7 @@
 			<hr />
 			<span class="span2">
 				<div>
-				<a href="javascript:translate()" onclick="translate()" style="text-align:left" localization>translation</a>
+				<a href="javascript:translate()" style="text-align:left" localization>translation</a>
 				</div>
 		
 			</span>
