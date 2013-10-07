@@ -1,4 +1,3 @@
-
 ////////////////////////// vars ///////////////////////////////
 var currentUser;
 var currentDir;
@@ -1099,7 +1098,7 @@ $(document).ready(function() {
 		$('#share-inputName').focus();
 	});
 	
-	if(localStorage.getItem('lang')!= 'zh-cn') localStorage.setItem('lang', 'zh-cn');
+	if(localStorage.getItem('lang') == null || localStorage.getItem('lang') != 'us-en') localStorage.setItem('lang', 'zh-cn');
 	transinto[localStorage.getItem('lang')]();
 
 	$('[localization]').html(function(index, old) {
