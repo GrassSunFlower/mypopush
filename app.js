@@ -446,6 +446,56 @@ io.sockets.on('connection', function(socket){
 			socket.emit('set', r);
 		});
 	});
+	
+	// here
+	socket.on('filedownload', function(data){ // path
+		if(!check(data, 'path')){
+			return;
+		}
+		if(!socket.session){
+			return socket.emit('unauthorized');
+		}
+		var user = socket.session.user;
+		_leave();
+		docDAO.getRevision(user._id, data.path, 0, function(err, revision){
+			if(err){
+				return socket.emit('filedownload', {err:err});
+			}
+			var room = rooms[data.path];
+			room = rooms[data.path] = {id:revision.doc, path:data.path, count:0, users:{}, version:0, buffer:new DocBuffer(revision.content), bps:'', exprs:{}};
+			var r = {text:room.buffer.toString()};
+			socket.emit('filedownload', r);
+		});
+	});
+
+	// here
+	socket.on('getcontribution', function(data){ // docs
+		if(!check(data, 'docs')){
+			return;
+		}
+		if(!socket.session){
+			return socket.emit('unauthorized');
+		}
+		var user = socket.session.user;
+		var contributions = [];
+		for(var i = 0; i < data.docs.length; i++) {
+			docDAO.getRevision(user._id, data.docs[i].path, 0, function(err, revision){
+				if(err){
+					return socket.emit('getcontribution', {err:err});
+				}
+				docDAO.getContribution(user._id, revision.doc, function(err, contribution){
+					if(err){
+						return socket.emit('getcontribution', {err:err});
+					}
+					if(contribution.contribution)
+						contributions.push(contribution.contribution);
+				});
+			});
+		}
+		setTimeout(function() {
+			socket.emit('getcontribution', {contribution:contributions});
+		}, 1000);
+	});
 
 	socket.on('leave', function(data){ //
 		if(!data) return;
@@ -455,6 +505,7 @@ io.sockets.on('connection', function(socket){
 		_leave();
 	});
 
+	// here
 	socket.on('change', function(data){ // version, from, to, text
 		if(!check(data, 'version', 'from', 'to', 'text')){
 			return;
@@ -468,6 +519,7 @@ io.sockets.on('connection', function(socket){
 			room.version = (room.version + 1) % 65536;
 			room.buffer.update(data.from, data.to, data.text, function(err){
 				if(!err){
+					docDAO.contribute(user._id, room.id, function(err){});
 					socket.emit('ok');
 					data.name = user.name;
 					socket.broadcast.to(room.id).emit('change', data);

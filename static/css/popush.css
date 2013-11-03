@@ -12,7 +12,7 @@ input, button {font-family:"ff-tisa-web-pro-1","ff-tisa-web-pro-2","Lucida Grand
 .hero-unit {min-width:820px;}
 .container-fluid {min-width:900px;}
 
-#nav-avatar {min-height:32px;min-width:32px;max-height:32px;max-width:32px;margin:-10px 5px;}
+#nav-avatar {min-height:43px;min-width:43px;max-height:43;max-width:43;margin:-10px 5px;}
 .shared-character {min-height:40px;min-width:40px;max-height:40px;max-width:40px;filter:alpha(opacity=40);-moz-opacity:0.4;-khtml-opacity:0.4;opacity:0.4;}
 .shared-character.online {filter:alpha(opacity=100);-moz-opacity:1;-khtml-opacity:1;opacity:1;}
 
@@ -51,7 +51,7 @@ input, button {font-family:"ff-tisa-web-pro-1","ff-tisa-web-pro-2","Lucida Grand
 #member-list-doc {margin-top:5px;overflow:auto;}
 
 #chatbox {margin-bottom:23px;}
-#editormain {position:fixed;}
+#editormain {position:relative;}
 #editormain-inner {position:relative;}
 
 #chat-show {overflow:auto;margin:4px 0;padding:5px 10px;border:1px solid #ccc;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;}
@@ -98,8 +98,8 @@ textarea {resize:none;}
 .well-top {border:none;margin:0;padding:0;width:auto;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0;}
 
 #fullscreentip {display:none;position:absolute;z-index:10000;left:0px;top:10px;}
-#login { background-color: rgb(26, 188, 156);
+/*#login { background-color: rgb(26, 188, 156);
 min-height: 317px; padding:0px;}
 #register { background-color: rgb(26, 188, 156);
-min-height: 317px; padding:0px;}
+min-height: 317px; padding:0px;}*/
 .userlistimg {min-width:32px;min-height:32px;}

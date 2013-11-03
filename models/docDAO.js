@@ -30,6 +30,7 @@ function DocDAO(){
 	}
 }
 
+	// here
 DocDAO.prototype.createDoc = function(userId, path, type, callback){
 	var that = this;
 	var reg = /^\/[a-zA-Z0-9]+((\/[^.\/@\\]+[^@\/\\]*[^.\/@\\]+)|(\/[^.\/@\\]))+$/
@@ -89,12 +90,20 @@ DocDAO.prototype.createDoc = function(userId, path, type, callback){
 						}
 						else{
 							var cTime = new Date().getTime();
-							db.doc.insert({path:path, type:"doc", owner:userId, members:[], revisions:[], permission:"private", createTime:cTime, modifyTime:cTime}, function(err, newDoc){
+							db.doc.insert({path:path, type:"doc", owner:userId, members:[], contribution:[], revisions:[], permission:"private", createTime:cTime, modifyTime:cTime}, function(err, newDoc){
 								if(err){
 									lock.release(rootPath);
 									return callback("inner error");
 								}
 								else{
+									var contri = [reply.name, 0];
+									contri = contri.join('/');
+									db.doc.update({_id:newDoc[0]._id}, {$push:{contribution:contri}}, function(err, reply){
+										if(err){
+											lock.release(rootPath);
+											return callback("inner error");
+										}
+									});
 									db.user.update({_id:userId}, {$push:{docs:newDoc[0]._id}}, function(err, reply){
 										if(err){
 											lock.release(rootPath);
@@ -766,6 +775,7 @@ DocDAO.prototype.moveDoc = function(userId, path, newPath, callback){
 	});
 };
 
+	// here
 DocDAO.prototype.addMember = function(userId, path, memberName, callback){
 	var that = this;
 	var paths = path.split("/");
@@ -836,10 +846,18 @@ DocDAO.prototype.addMember = function(userId, path, memberName, callback){
 								lock.release(rootPath);
 								return callback("inner error");
 							}
-							else{
-								lock.release(rootPath);
-								return callback(null);
-							}
+							var contri = [memberName, 0];
+							contri = contri.join('/');
+							db.doc.update({_id:doc._id}, {$push:{contribution:contri}}, function(err, reply){
+								if(err){
+									lock.release(rootPath);
+									return callback("inner error");
+								}
+								else{
+									lock.release(rootPath);
+									return callback(null);
+								}
+							});
 						});
 					});
 				});
@@ -1395,6 +1413,94 @@ DocDAO.prototype.save = function(userId, docId, content, callback){
 						that._modifyTime(myDoc.path + "/.", mTime, callback);
 					}
 				});
+			});
+		});
+	});
+};
+
+	// here
+DocDAO.prototype.contribute = function(userId, docId, callback){
+	var dId = userId.toString();
+	var username;
+	db.user.findOne({_id:userId}, {docs:1, name:1, _id:0}, function(err, reply){username=reply.name;});
+	db.doc.findOne({_id:docId},function(err,myDoc){
+		if (err){
+			return callback("inner error");
+		}
+		if (!myDoc){
+			return callback("unauthorized");
+		}
+		if (myDoc.type == "dir"){
+			return callback("dir!!");
+		}
+		var paths = myDoc.path.split('/');
+		var rootpath = '/' + paths[1] + '/' + paths[2];
+		lock.acquire(rootpath, function(){
+			db.doc.findOne({path:rootpath},function(err,rootDoc){
+				if (err){
+					lock.release(rootpath);
+					return callback("inner error");
+				}
+				if (!rootDoc){
+					lock.release(rootpath);
+					return callback("invalid");
+				}
+				var contris = [];
+				for (i in rootDoc.contribution){
+					var contri = rootDoc.contribution[i].split('/');
+					if (username == contri[0]){
+						var newscore = (Number(contri[1])+1).toString();
+						var newcontri = [contri[0], newscore];
+						newcontri = newcontri.join('/');
+						contris.push(newcontri);
+					}
+					else
+						contris.push(rootDoc.contribution[i]);
+				}
+				db.doc.update({_id:docId}, {$set:{contribution:contris}}, function(err){});
+				lock.release(rootpath);
+				return callback("member doesn't exists");
+			});
+		});
+	});
+};
+
+	// here
+DocDAO.prototype.getContribution = function(userId, docId, callback){
+	var dId = userId.toString();
+	var username;
+	db.user.findOne({_id:userId}, {docs:1, name:1, _id:0}, function(err, reply){username=reply.name;});
+	db.doc.findOne({_id:docId},function(err,myDoc){
+		if (err){
+			return callback("inner error");
+		}
+		if (!myDoc){
+			return callback("unauthorized");
+		}
+		if (myDoc.type == "dir"){
+			return callback("dir!!");
+		}
+		var paths = myDoc.path.split('/');
+		var rootpath = '/' + paths[1] + '/' + paths[2];
+		lock.acquire(rootpath, function(){
+			db.doc.findOne({path:rootpath},function(err,rootDoc){
+				if (err){
+					lock.release(rootpath);
+					return callback("inner error");
+				}
+				if (!rootDoc){
+					lock.release(rootpath);
+					return callback("invalid");
+				}
+				var score, total = 0;
+				var contris = [];
+				for (i in rootDoc.contribution){
+					var contri = rootDoc.contribution[i].split('/');
+					contris.push(contri);
+				}
+				var result = {contribution: contris};
+				lock.release(rootpath);
+				return callback(null, result);
 			});
 		});
 	});

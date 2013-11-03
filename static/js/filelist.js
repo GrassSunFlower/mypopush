@@ -96,6 +96,7 @@ function fileList(table) {
 		'<th class="col4" str="timestamp" localization>' + strings['timestamp'] + '</th><th class="col5">&nbsp;</th></tr>';
 		},
 	
+	// here
 		add: function(o) {
 			obj.find('.no-file').remove();
 			var i = elements.length;
@@ -106,12 +107,13 @@ function fileList(table) {
 			var ext = namesplit[namesplit.length - 1];
 			if(namesplit.length == 1)
 				ext = 'unknown';
+			var isdoc = (o.type == 'doc' ? true : false);
 
 			var toAppend = '<tr>' +
 				'<td class="col1"><img src="' + getpic(o.type, o.shared, ext) + '" height="32" width="32" /></td>' +
 				'<td class="col2"><a href="javascript:;" onclick="allFileLists['+n+'].onname(allFileLists['+n+'].elements['+i+'])">' + 
 				htmlescape(o.showname) + '</a></td>' +
-				(mode & 2?('<td class="col3" str=' + (o.shared?'shared':'') + ' localization>' + (o.shared?strings['shared']:'') + '</td>'):
+				(mode & 2?('<td class="col3" onclick="allFileLists['+n+'].onstatistics(allFileLists['+n+'].elements['+i+'])" str=' + (o.shared?'shared':'') + ' localization>' + (o.shared?strings['shared']:'')/* + ((o.shared&&o.score)?('<br />'+o.score):'')*/ + '</td>'):
 				'<td class="col3 owner"><img class="user-' + o.owner.name + '" src="' + o.owner.avatar + '" width="32" height="32"/>' + o.owner.name + '</td>') +
 				'<td class="col4">' + o.time + '</td>' +
 				'<td class="col5"><div class="dropdown">' +
@@ -121,8 +123,8 @@ function fileList(table) {
 				'<li><a href="javascript:;" onclick="allFileLists['+n+'].onshare(allFileLists['+n+'].elements['+i+'])" str="sharemanage" localization>' + strings['sharemanage'] + '</a></li>':'') +
 				(mode & 2?(
 				'<li><a href="javascript:;" onclick="allFileLists['+n+'].ondelete(allFileLists['+n+'].elements['+i+'])" str="delete" localization>' + strings['delete'] + '</a></li>' +
-				'<li><a href="javascript:;" onclick="allFileLists['+n+'].onrename(allFileLists['+n+'].elements['+i+'])" str="rename" localization>' + strings['rename'] + '</a></li>'/* +
-				'<li><a href="javascript:;" onclick="allFileLists['+n+'].ondownload(allFileLists['+n+'].elements['+i+'])" str="export" localization>' + strings['export'] + '</a></li>'*/):'') +
+				'<li><a href="javascript:;" onclick="allFileLists['+n+'].onrename(allFileLists['+n+'].elements['+i+'])" str="rename" localization>' + strings['rename'] + '</a></li>' +
+				(isdoc?('<li><a href="javascript:;" onclick="allFileLists['+n+'].ondownload(allFileLists['+n+'].elements['+i+'])" str="export" localization>' + strings['export'] + '</a></li>'):'')):'') +
 				'</ul>' +
 				'</div>' +
 				'</td>' +
@@ -143,6 +145,7 @@ function fileList(table) {
 				if(!filter(o))
 					continue;
 				var n = {};
+				n['score'] = o.score;
 				n['path'] = o.path;
 				var paths = o.path.split('/');
 				if((mode & 2) == 0 && paths.length == 3) {

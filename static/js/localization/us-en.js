@@ -7,7 +7,7 @@ strings = {
 	'doesntmatch'                   :'The two passwords did not match',
 	'namelength'                    :'The length of the username has to be between 6 and 20',
 	'passlength'                    :'The length of the password has to be under 32',
-	'registerok'                    :'Successfully Registrated. Please enter the <a href="javascript:;" onclick="loginview()">login</a> page',
+	'registerok'                    :'Successfully Registrated. Please enter the <a href="#">login</a> page',
 	'name exists'                   :'The username is already existed',
 	'inner error'                   :'Server error',
 	'name invalid'                  :'The username can only consist of letters and numbers',
@@ -111,7 +111,10 @@ strings = {
 	'voice'                         :'Voice Chat',
 	'removeexpression'              :'Remove the monitor',
 	'novoice'                       :'The browser do not support<br />the voice chat. Please use<br />Chrome 18+ or Opera 12+',
-	'translation'			:'Click here to translate into Chinese',
-	'changeword'			:'Change font'
+	'translation'					:'Click here to translate into Chinese',
+	'changeword'					:'Change font',
+	'back-to-login'					:'Back to login',
+	'download'						:'File Download',
+	'contribution'					:'Contribution'
 };
 };

@@ -1,0 +1,113 @@
+/**
+ * Unicorn Admin Template
+ * Diablo9983 -> diablo9983@gmail.com
+**/
+html, body {
+    width: 100%;
+    height: 100%;
+}
+body {
+	background-image: url(../images/login_back.png);
+    padding: 0;
+    margin: 0;
+}
+
+#login-box,#register-box {
+    width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+#login-box {
+    min-width: 400px;
+	background: #ffffff;
+    box-shadow: 0 0 4px #000000;
+    border-radius: 7px;
+    text-align: center;
+    position: relative;   
+}
+#login-message {
+    right: 0px;
+    position: absolute;
+}
+#login-box p {
+    margin-top: 20px;
+    padding: 0 20px;
+}
+
+#login-box .form-actions {
+	padding: 14px 20px 15px;
+}
+#login-box .form-actions .pull-left {
+	margin-top: 2px;
+}
+
+#login-box form#loginform {
+	z-index: 200;
+}
+
+#login-box form#recoverform {
+	z-index: 100;
+	opacity: 0;
+    display:none;
+}
+
+#login-box form#recoverform .form-actions {
+    margin-top: 27px;
+}
+
+#login-box form#recoverform .control-group {
+	margin: 23px 0;
+}
+#register-message {
+    right: 0px;
+    position: absolute;
+}
+#register-box {
+    min-width: 400px;
+    background: #ffffff;
+    box-shadow: 0 0 4px #000000;
+    border-radius: 7px;
+    text-align: center;
+    position: relative;   
+}
+
+#register-box p {
+    margin-top: 20px;
+    padding: 0 20px;
+}
+
+#register-box .form-actions {
+    padding: 14px 20px 15px;
+}
+#register-box .form-actions .pull-left {
+    margin-top: 2px;
+}
+
+#register-box form#loginform {
+    z-index: 200;
+}
+
+#register-box form#recoverform {
+    z-index: 100;
+    opacity: 0;
+    display:none;
+}
+
+#register-box form#recoverform .form-actions {
+    margin-top: 27px;
+}
+
+#register-box form#recoverform .control-group {
+    margin: 23px 0;
+}
+
+.form-vertical, .form-actions {
+    margin-bottom: 0;
+}
+
+@media (max-width: 480px){
+    #logo, #login-box ,#register-box{
+        width: 80%; 
+    }    
+}

@@ -1,448 +1,491 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Popush</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Popuxi</title>
   
-	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
-	<link href="css/codemirror.css" rel="stylesheet" media="screen" />
-	<link href="css/popush.css" rel="stylesheet" media="screen" />
-<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Cantora+One&Amarante&effect=shadow-multiple">
-<link href="css/flat-ui.css" rel="stylesheet" media="screen"/>
-	<script type="text/javascript" src="js/conf.js"></script>
-	<script type="text/javascript" src="js/jquery.min.js"></script>
-	<script type="text/javascript" src="js/jquery.cookie.js"></script>
-	<script type="text/javascript" src="js/socket.io.min.js"></script>
-	<script type="text/javascript" src='js/firebase.js'></script>
-	<script type="text/javascript" src="js/newMultiConnection.js"></script>
-	<script type="text/javascript" src="js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/codemirror.js"></script>
-	<script type="text/javascript" src="js/loadmode.js"></script>
-	<script type="text/javascript" src="js/localization/zh-cn.js"></script>
-	<script type="text/javascript" src="js/localization/us-en.js"></script>
-	<script type="text/javascript" src="js/ie.js"></script>
-	<script type="text/javascript" src="js/filelist.js"></script>
-	<script type="text/javascript" src="js/userlist.js"></script>
-	<script type="text/javascript" src="js/expressionlist.js"></script>
-	<script type="text/javascript" src="js/popush.js"></script>
-	<script type="text/javascript" src="js/room.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet" media="screen" />
+    <link href="css/codemirror.css" rel="stylesheet" media="screen" />
+    <link href="css/popush.css" rel="stylesheet" media="screen" />
+    <link href="css/popush.login.css" rel="stylesheet" media="screen" />
+    <link href="css/popush.filelist.css" rel="stylesheet" media="screen" />
+    <script type="text/javascript" src="js/conf.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <!-- // <script type="text/javascript" src="js/jquery.flot.pie.min.js"></script> -->
+    <script type="text/javascript" src="js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="js/underscore/underscore.js"></script>
+    <script type="text/javascript" src="js/backbone/backbone.js"></script>
+    <script type="text/javascript" src="js/socket.io.min.js"></script>
+    <script type="text/javascript" src='js/firebase.js'></script>
+    <script type="text/javascript" src="js/newMultiConnection.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/codemirror.js"></script>
+    <script type="text/javascript" src="js/loadmode.js"></script>
+    <script type="text/javascript" src="js/localization/zh-cn.js"></script>
+    <script type="text/javascript" src="js/localization/us-en.js"></script>
+    <script type="text/javascript" src="js/ie.js"></script>
+    <script type="text/javascript" src="js/filelist.js"></script>
+    <script type="text/javascript" src="js/userlist.js"></script>
+    <script type="text/javascript" src="js/expressionlist.js"></script>
+    <script type="text/javascript" src="js/popush.js"></script>
+
+             <!-- <script src="js/excanvas.min.js"></script>
+            // <script src="js/jquery.ui.custom.js"></script>
+            // <script src="js/jquery.flot.min.js"></script>
+            // <script src="js/jquery.flot.pie.min.js"></script>
+            // <script src="js/jquery.flot.resize.min.js"></script>
+            // <script src="js/unicorn.js"></script>
+            // <script src="js/unicorn.charts.js"></script> -->
 </head>
-<body style="display:none;">
-	<div class="hero-unit" id="big-one" style="padding-top:30px;padding-bottom:20px;">
-		<div class="container">
-			<div class="row">
-				<h1>&nbsp;</h1>
-				<p class="lead">&nbsp;</p>
-			</div>
-		</div>
-	</div>
+<body>
+    <div id = "navcontainer">
+    </div>
+    <div id="container" class="container-fluid">
+    </div>
+    <script type="text/template" id="loginTemplate">
+        <div id="login-box" style="margin-top:220px">
+            <h2 style="text-align:center" localization>login</h2>
+            <div class="control-group">
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="add-on"><i class="icon-user"></i></span>
+                        <input id="login-inputName" type="text" placeholder="Username"  />
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="add-on"><i class="icon-lock"></i></span>
+                        <input id="login-inputPassword" type="password" placeholder="Password" />
+                    </div>
+                </div>
+            </div>
+            <div style="height: 20px">
+                <div class="span3">
+                    <div class="alert hide" id="login-message">
+                        <button type="button" class="close" onclick="$('#login-message').slideUp()">&times;</button>
+                        <span id="login-error" localization>Nothing here</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <p align="center" id="loading-init" style="margin:1px 0 2px 0"><img src="images/init.gif"/></p>
+                <div class="controls hide" id="login-control" style="display:none;">
+                    <span class="pull-left">&lt; <a class="flip-link" id="register-page" href="javascript:;" localization>register</a></span>
+                    <span class="pull-right"><button id="login-button" type="submit" class="btn btn-inverse" localization>login</button></span>
+                </div>
+            </div>
+            
+        </div>
+    </script>
+    <script type="text/template" id="registerTemplate">
+        <div id="register-box" style="margin-top:220px">
+            <h2 style="text-align: center" class="blink" localization>register</h2>
+            <div class="control-group">
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="add-on"><i class="icon-user"></i></span><input id="register-inputName" type="text" placeholder="Username" />
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="add-on"><i class="icon-lock"></i></span><input id="register-inputPassword" type="password" placeholder="Password" />
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="add-on"><i class="icon-lock"></i></span><input id="register-confirmPassword" type="password" placeholder="Repeat-password" />
+                    </div>
+                </div>
+            </div>
+            <div style="height: 10px">
+                <div class="span3">
+                    <div class="alert hide" id="register-message">
+                        <button type="button" class="close" onclick="$('#register-message').slideUp()">&times;</button>
+                        <span id="register-error" localization>Nothing here</span>
+                    </div>
+                </div>    
+            </div>
+            <div class="form-actions">
+                <div class="controls" id="register-control">
+                    <span class="pull-left">&lt; <a href="#" class="flip-link" id="to-login" localization>back-to-login</a></span>
+                    <span class="pull-right"><button id="register-button" type="submit" class="btn btn-inverse" localization>register</button></span>
+                </div>
+            </div>        
+        </div>
+    </script>
+    <script type="text/template" id ="navTemplate">
+        <div id="header">
+            <h1>Popush</h1>     
+        </div>
+        <div id="changeavatar" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="changeavatarLabel" aria-hidden="true" data-backdrop="static">
+            <div class="modal-header">
+                <button type="button" id="changeavatarclose-button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 id="changeavatarLabel" localization>changeavatar</h3>
+            </div>
+            <div class="modal-body">
+                <div class="alert hide" id="changeavatar-message">
+                    <button type="button" class="close" onclick="$('#changeavatar-message').slideUp()">&times;</button>
+                    <span id="changeavatar-error" localization>Nothing here</span>
+                </div>
+                <p localization>clicktochange</p>
+                <p align="center">
+                    <img id="changeavatar-img" src=<%=avatar%> width="192" height="192" style="cursor: pointer;" />
+                </p>
+                <div style="overflow: hidden; height: 0; max-height: 0;">
+                    <input type="file" name="upload" id="changeavatar-input" accept="image/png,image/jpeg" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="changeavatarclose-button" class="btn" data-dismiss="modal" aria-hidden="true" localization>back</button>
+            </div>
+        </div>
+        <div id="changepassword" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="changepasswordLabel" aria-hidden="true" data-backdrop="static">
+            <div class="modal-header">
+                <button type="button" id="changepasswordclose-button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 id="changepasswordLabel" localization>changepassword</h3>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="changepassword-old" localization>oldpassword</label>
+                    <div class="controls">
+                        <input type="password" id="changepassword-old" />
+                        <span class="help-inline"></span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="changepassword-old" localization>newpassword</label>
+                    <div class="controls">
+                        <input type="password" id="changepassword-new" />
+                        <span class="help-inline"></span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="changepassword-old" localization>confirm</label>
+                    <div class="controls">
+                        <input type="password" id="changepassword-confirm"/>
+                        <span class="help-inline"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="changepassword-buttons">
+                    <button class="btn" id="changepassword-button" localization>ok</button>
+                    <button id="changepasswordclose-button" class="btn" data-dismiss="modal" aria-hidden="true" localization>cancel</button>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/template" id="filecontrolTemplate">
+        <div id="content">
+            <div id="content-header">
+                <div class="btn-group">
+                    <img height="43" width="43" src="#" id="nav-avatar" />
+                    <a class="btn btn-large dropdown-toggle" title="Manage Users" href="#" data-toggle="dropdown" data-target="#menu-messages"><i class="icon-user"> </i><span id="nav-user-name">Your Name</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="sAdd" id="changePassWrd" href="#changepassword" data-toggle="modal">修改密码</a></li>
+                        <li><a class="sInbox" href="#changeavatar" id="changeavatar1" data-toggle="modal">修改头像</a></li>
+                    </ul>
+                    <a id="logoutId" href="javascript:;" class="btn btn-large tip-bottom">登出</a>
+                </div>
+            </div>
+            <div id="breadcrumb">
+                <a href="#filelist" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> 个人主页</a>
+                <a href="#filelist" class="current">文件列表</a>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span12 center" style="text-align: center;">                 
+                        <ul class="quick-actions">
+                            <li>
+                                <a id="newfileopen-button" href="#newfile" data-toggle="modal">
+                                    <i class="icon-shopping-bag" ></i>
+                                    <p localization>newfile</p>
+                                </a>
+                            </li>
+                            <li>
+                                <a id="newfolderopen-button" href="#newfile" data-toggle="modal" >
+                                    <i class="icon-database"></i>
+                                    <p localization>newfolder</p>
+                                </a>
+                            </li>
+                            <li>
+                                <a  href="#" onclick="alert('请选择相应文件的右侧小扳手！')">
+                                    <i class="icon-people"></i>
+                                    <p localization>sharemanage</p>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="alert('请选择相应文件的右侧小扳手！')">
+                                    <i class="icon-download"></i>
+                                    <p localization>download</p>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="alert('请点击共享查看！')">
+                                    <i class="icon-graph"></i>
+                                    <p localization>contribution</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>  
+                </div>
+            </div>
+            <div id="filecontrol" >
+            <div class="row-fluid">
+                <div class="span12">
+                    <ul class="nav nav-tabs">
+                        <li id="ownedfile">
+                            <a href="javascript:;" id="ownedfile-button"><span localization>owningfiles</span></a>
+                        </li>
+                        <li id="ownedfileex" class="hide"><a href="javascript:;" id="ownedfile-button" localization>owningfiles</a></li>
+                        <li id="sharedfile"><a href="javascript:;" id="sharedfile-button" localization>sharedfiles</a></li>
+                    </ul>
+                </div>
+            </div>
 
-	<div class="navbar navbar-fixed-top hide" id="nav-head">
-		<div class="navbar-inner">
-			<div class="container" style="width: auto; padding: 0 20px;">
-				<a class="brand" href="#">Popush</a>
-				<ul class="nav pull-right">
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-						<span id="nav-user-name">Your Name</span>
-						<img height="32" width="32" src="#" id="nav-avatar" />
-						</a>
-						<ul class="dropdown-menu">
-							<li><a id="changePassWrd" href="#changepassword" data-toggle="modal" onclick="changepasswordopen()" localization>changepassword</a></li>
-							<li><a href="#changeavatar" id="changeacatar1" data-toggle="modal" onclick="changeavataropen()" localization>changeavatar</a></li>
-							<li class="dropdown-submenu pull-left" >
-								<a localization onclick="changeWord" id="openChangeWord">changeword</a>
-								<ul class="dropdown-menu" id="openChangeShow" style="display:none">
-									<li><a tabindex ='-1' onclick="changeBubbler()">Bubbler+One</a></li>
-									<li onclick="changeTangerine"><a herf="#" onclick="changeTangerine()">Tangerine</a></li>
-								
-								</ul>
-							</li>
-							<li class="divider"></li>
-							<li><a id="logoutId" href="javascript:;" onclick="logout()" localization>logout</a></li>
-						</ul>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</div>
-	
-	<div class="container-fluid" style="margin-top:50px">
+            <div class="row-fluid" id="file-list">
+                <div class="span10">
+                    <p><span localization>currentdir:</span><span id="current-dir"></span></p>
+                    <table class="table table-hover" id="file-list-table">
+                    </table>
+                </div>
+                <div class="span2">
+                    <span localization>shareduser</span>：
+                    <div id="member-list">
+                        <img src="images/character.png" width="40" height="40" class="pull-left shared-character" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="newfile" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="newfileLabel" aria-hidden="true" data-backdrop="static">
+            <div class="modal-header">
+                <button type="button" id="newfileclose-button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 id="newfileLabel" localization>newfile</h3>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="newfile-inputName" localization>name</label>
+                    <div class="controls">
+                        <input type="text" id="newfile-inputName" />
+                        <span class="help-inline"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="newfile-buttons">
+                    <button class="btn" id="newfile-button" localization>ok</button>
+                    <button id="newfileclose-button" class="btn" data-dismiss="modal" aria-hidden="true" localization>cancel</button>
+                </div>
+            </div>
+        </div>
+        <div id="delete" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true" data-backdrop="static">
+            <div class="modal-header">
+                <button type="button" id="deleteclose-button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 id="deleteLabel" localization>deleteconfirm</h3>
+            </div>
+            <div class="modal-body">
+                <p><span localization>suretodelete</span><span class="folder"></span> <span id="delete-name"></span></p>
+            </div>
+            <div class="modal-footer">
+                <div id="delete-buttons">
+                    <button class="btn" id="deleteconfirm-button" localization>ok</button>
+                    <button id="deleteclose-button" class="btn" data-dismiss="modal" aria-hidden="true" localization>cancel</button>
+                </div>
+            </div>
+        </div>
+        <div id="rename" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="renameLabel" aria-hidden="true" data-backdrop="static">
+            <div class="modal-header">
+                <button type="button" id="renameclose-button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 id="renameLabel" localization>rename</h3>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="rename-inputName" localization>newname</label>
+                    <div class="controls">
+                        <input type="text" id="rename-inputName" />
+                        <span class="help-inline"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="rename-buttons">
+                    <button class="btn" id="rename-button" localization>ok</button>
+                    <button class="btn" id="renameclose-button" data-dismiss="modal" aria-hidden="true" localization>cancel</button>
+                </div>
+            </div>
+        </div>
+        <div id="share" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="shareLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-header">
+                <button type="button" id="closeshare-button" class="close">&times;</button>
+                <h3 id="shareLabel" localization>sharemanage</h3>
+            </div>
+            <div class="modal-body">
+                <p><span localization>file</span> <span id="share-name"></span><span localization>sshareduser</span></p>
+                <div id="share-user-box">
+                    <ul class="nav nav-pills nav-stacked" id="share-user-list">
+                    </ul>
+                </div>
+                <div class="alert hide" id="share-message">
+                    <button type="button" class="close" onclick="$('#share-message').slideUp()">&times;</button>
+                    <span id="share-error" localization>Nothing here</span>
+                </div>
+                <div class="form-inline" id="share-buttons">
+                    <span localization>newuser:</span>
+                    <input type="text" id="share-inputName" />
+                    <button class="btn" type="button" id="share-button" localization>add</button>
+                    <button class="btn pull-right" type="button" id="unshare-button" localization>delete</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="share-buttons">
+                    <button class="btn" id="closeshare-button" localization>back</button>
+                </div>
+            </div>
+        </div>
+        <div id="messagedialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="messagedialogLabel" aria-hidden="true" data-backdrop="static">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 id="messagedialogLabel">title</h3>
+            </div>
+            <div class="modal-body">
+                <p id="messagedialogContent">info</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true" localization>ok</button>
+            </div>
+        </div>
+    </script>
+    <script type="text/template" id="editorTemplate">
+        <div id="content">
+            <div id="content-header">
+                <h1></h1>
+                <div class="btn-group">
+                    <img height="43" width="43" src="#" id="nav-avatar" />
+                        </a>
+                    <a class="btn btn-large dropdown-toggle" title="Manage Users" href="#" data-toggle="dropdown" data-target="#menu-messages"><i class="icon-user"> </i><span id="nav-user-name">Your Name</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="sAdd" id="changePassWrd" href="#changepassword" data-toggle="modal">修改密码</a></li>
+                        <li><a class="sInbox" href="#changeavatar" id="changeavatar1" data-toggle="modal">修改头像</a></li>
+                    </ul>
+                    <a id="logoutId" href="javascript:;" class="btn btn-large tip-bottom">登出</a>
+                </div>
+            </div>
+            <div id="breadcrumb">
+                <a href="#filelist" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> 个人主页</a>
+                <a href="#filelist" class="current">文件列表</a>
+            </div>
+                    <div id="editor" class="row-fluid">
+            <div class="span9">
+                <div class="tooltip top in" id="fullscreentip">
+                    <div class="tooltip-inner" localization>esctoexit</div>
+                </div>
+                <div id="editormain">
+                    <div id="editormain-inner">
+                        <div id="over-editor" class="btn-toolbar" style="margin: 0 0 5px 0;">
+                            <div class="btn-group pull-right">
+                                <button class="btn" type="button" id = "set-fullscreen" title="maximum-title"><i class="icon-fullscreen"></i></button>
+                                <button class="btn" type="button" id = "toggle-chat" title="hide-title"><i class="icon-forward"></i></button>
+                            </div>
+                            <div class="btn-group pull-right" style="margin: 0 15px 5px 0;">
+                                <button class="btn" type="button" id="editor-run" title="run-title"><i class="icon-play"></i></button>
+                                <button class="btn" type="button" id="editor-debug" title="debug-title"><i class="icon-eye-open"></i></button>
+                                <button class="btn" type="button" id="editor-console" title="console"><i class="icon-share"></i></button>
+                            </div>
+                            <div class="btn-group" id="current-doc-outer">
+                                <div id="breadcrumb">
+                                    <p id="current-doc-p">
+                                        <a href="#filelist" class="current">文件列表</a>
+                                        <span id="current-doc">current doc</span>
+                                        <span class="red" id="current-doc-state" localization>saving...</span>
+                                    </p>
+                                </div>
 
-		<div class="row-fluid" id="login">
-			<div class="span4 offset4">
-				
-				<h2 style="text-align:center" localization>login</h2>
-				<hr />
-				<div id="login-box" class=" form-horizontal login-form " style="min-width:420px;position:relative;">
-					<div class="control-group ">
-					
-						<label class="control-label" for="login-inputName" localization>username</label>
-						<div class="controls">
-							<input class="login-field"  type="text" id="login-inputName" onkeydown="pressenter(arguments[0],login)" />
-<label class="login-field-icon fui-man-15" for="login-inputName"></label>
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label " for="login-inputPassword"  localization>password</label>
-						<div class="controls">
-							<input class ="login-field" type="password" id="login-inputPassword" onkeydown="pressenter(arguments[0],login)" />
-<label class="login-field-icon fui-lock-16" for="login-pass"></label>
-						</div>
-					</div>
-					<div class="control-group hide" id="login-padding">
-						<label class="control-label">&nbsp;</label>
-					</div>
-					<div class="control-group">
-						<p align="center" id="loading-init" style="margin:1px 0 2px 0"><img src="images/init.gif"/></p>
-						<div class="controls hide" id="login-control" style="display:none;">
-							<button type="submit" class="btn pull-right" onclick="login();" localization>login</button>
-							<a class="" href="javascript:;" onclick="registerview()" localization>register</a>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="span3" style="margin-top:128px;margin-left:20px;width:250px">
-				<div class="alert hide" id="login-message">
-					<button type="button" class="close" onclick="$('#login-message').slideUp()">&times;</button>
-					<span id="login-error" localization>Nothing here</span>
-				</div>
-			</div>
-		</div>
-		
-		<div class="row-fluid hide" id="register">
-			<div class="span4 offset4">
-				<h2 style="text-align:center" class="blink" localization>register</h2>
-				<hr />
-				<div id="register-box" class="form-horizontal login-form" style="min-width:420px;position:relative;">
-					<div class="control-group">
-						<label class="control-label" for="register-inputName" localization>username</label>
-						<div class="controls">
-							<input type="text" id="register-inputName" oninput="checkvalid()" onfocus="checkvalid()" onkeydown="pressenter(arguments[0],register)" />
-						</div>
-					</div>
-					<div class="control-group">
-						<label class="control-label" for="register-inputPassword" localization>password</label>
-						<div class="controls">
-							<input type="password" id="register-inputPassword" onkeydown="pressenter(arguments[0],register)" />
-						</div>
-					</div>
-					<div class="control-group hide" id="register-padding">
-						<label class="control-label" for="register-inputPassword" localization>confirm</label>
-						<div class="controls">
-							<input type="password" id="register-confirmPassword" onkeydown="pressenter(arguments[0],register)" />
-						</div>
-					</div>
-					<div class="control-group">
-						<div class="controls" id="register-control">
-							<button type="submit" class="btn" onclick="register();" localization>register</button>
-							<a class="switch-rel" href="javascript:;" onclick="loginview()" localization>login</a>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="span3" style="margin-left:20px;width:250px">
-				<div class="alert hide" id="register-message">
-					<button type="button" class="close" onclick="$('#register-message').slideUp()">&times;</button>
-					<span id="register-error" localization>Nothing here</span>
-				</div>
-			</div>
-		</div>
-
-		<div id="filecontrol" class="hide">
-			<div class="row-fluid">
-				<div class="span12">
-					<ul class="nav nav-tabs">
-						<li class="active dropdown" id="ownedfile">
-							<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"><span localization>owningfiles</span><b class="caret"></b></a>
-							<ul class="dropdown-menu">
-								<li><a href="#newfile" data-toggle="modal" onclick="newfileopen()" localization>newfile</a></li>
-								<li><a href="#newfile" data-toggle="modal" onclick="newfolderopen()" localization>newfolder</a></li>
-								<!--<li class="divider"></li>
-								<li><a href="javascript:;" localization>import</a></li>-->
-							</ul>
-						</li>
-						<li id="ownedfileex" class="hide"><a href="javascript:;" onclick="ownedfilelist()" localization>owningfiles</a></li>
-						<li id="sharedfile"><a href="javascript:;" onclick="sharedfilelist()" localization>sharedfiles</a></li>
-					</ul>
-				</div>
-			</div>
-			
-			<div class="row-fluid" id="file-list">
-				<div class="span10">
-					<p><span localization>currentdir:</span><span id="current-dir"></span></p>
-					<table class="table table-hover" id="file-list-table">
-					</table>
-				</div>
-				<div class="span2">
-					<span localization>shareduser</span>：
-					<div id="member-list">
-						<img src="images/character.png" width="40" height="40" class="pull-left shared-character"/>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div id="editor" class="row-fluid hide">
-			<div class="span9">
-				<div class="tooltip top in" id="fullscreentip">
-					<div class="tooltip-inner" localization>esctoexit</div>
-				</div>
-				<div id="editormain">
-					<div id="editormain-inner">
-						<div id="over-editor" class="btn-toolbar" style="margin:0 0 5px 0;">
-							<div class="btn-group pull-right">
-								<button class="btn" type="button" onclick="setFullScreen(editor, true)" title="maximum-title"><i class="icon-fullscreen"></i></button>
-								<button class="btn" type="button" onclick="togglechat(this)" title="hide-title"><i class="icon-forward"></i></button>
-							</div>
-							<div class="btn-group pull-right" style="margin:0 15px 5px 0;">
-								<button class="btn" type="button" id="editor-run" onclick="run()" title="run-title"><i class="icon-play"></i></button>
-								<button class="btn" type="button" id="editor-debug" onclick="debug()" title="debug-title"><i class="icon-eye-open"></i></button>
-								<button class="btn" type="button" id="editor-console" onclick="toggleconsole()" title="console"><i class="icon-share"></i></button>
-							</div>
-							<div class="btn-group pull-left" style="margin-left:0">
-								<button class="btn" type="button" id="editor-back" onclick="closeeditor()"><i class="icon-home"></i></button>
-							</div>
-							<div class="btn-group" id="current-doc-outer">
-								<p id="current-doc-p">
-									<span id="current-doc">current doc</span>
-									&nbsp;&nbsp;
-									<span class="red" id="current-doc-state" localization>saving...</span>
-								</p>
-							</div>
-							<div style="clear:both;"></div>
-						</div>
-						<textarea id="editor-textarea" ></textarea>
-						<div id="under-editor" class="hide">
-							<div id="console">
-								<div id="console-title" class="well well-top" style="border-bottom:1px solid #ddd;padding:4px 0 5px 10px;" localization>console</div>
-								<div id="console-inner">
-								</div>
-								<input id="console-input" type="text" style="border:none;border-radius:0;border-top:1px solid #ddd;" onkeydown="pressenter(arguments[0],stdin)"/>
-							</div>
-							<div id="varlist">
-								<div class="well well-top">
-									<div class="btn-group">
-										<button class="btn disabled debugandwait" type="button" title="step-title" onclick="debugstep()">
-											<i class="icon-arrow-down"></i>
-										</button>
-										<button class="btn disabled debugandwait" type="button" title="next-title" onclick="debugnext()">
-											<i class="icon-arrow-right"></i>
-										</button>
-										<button class="btn disabled debugandwait" type="button" title="finish-title" onclick="debugfinish()">
-											<i class="icon-share-alt"></i>
-										</button>
-										<button class="btn disabled debugandwait" type="button" title="continue-title" onclick="debugcontinue()">
-											<i class="icon-play"></i>
-										</button>
-									</div>
-								</div>
-								<div id="varlistreal">
-									<table class="table table-hover" id="varlist-table">
-									</table>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="span3" id="chatbox">
-				<div id="member-list-doc">
-					<img src="images/character.png" width="40" height="40" class="pull-left shared-character" />
-				</div>
-				<div id="chat-show" style="height:284px;">
-					<div id="chat-show-inner"></div>
-				</div>
-				<div class="input-append" style="margin-bottom:0">
-					<input type="text" id="chat-input" onkeydown="pressenter(arguments[0],chat)">
-					<button class="btn" type="button" onclick="chat()" title="send"><i class="icon-comment"></i></button>
-					<button class="btn active" type="button" id="voice-on" onclick="voice()" title="voice"><i class="icon-volume-up"></i></button>
-				</div>
-			</div>
-		</div>
-		
-		<div id="footer" class="row-fluid">
-			<hr />
-			<span class="span2">
-				<div>
-				<a href="javascript:translate()" style="text-align:left" localization>translation</a>
-				</div>
-		
-			</span>
-			<span class="span7">
-				<p style="text-align:right" localization>popushteam</p>
-				<p> &nbsp; </p>
-			</span>
-		</div>
-		
-		<!-- popover -->
-		<div id="newfile" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="newfileLabel" aria-hidden="true" data-backdrop="static">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 id="newfileLabel" localization>newfile</h3>
-			</div>
-			<div class="modal-body form-horizontal">
-				<div class="control-group">
-					<label class="control-label" for="newfile-inputName" localization>name</label>
-					<div class="controls">
-						<input type="text" id="newfile-inputName" onkeydown="pressenter(arguments[0],newfile)" />
-						<span class="help-inline"></span>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<div id="newfile-buttons">
-					<button class="btn" onclick="newfile()" localization>ok</button>
-					<button class="btn" data-dismiss="modal" aria-hidden="true" localization>cancel</button>
-				</div>
-			</div>
-		</div>
-		
-		<!-- popover -->
-		<div id="changeavatar" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="changeavatarLabel" aria-hidden="true" data-backdrop="static">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 id="changeavatarLabel" localization>changeavatar</h3>
-			</div>
-			<div class="modal-body">
-				<div class="alert hide" id="changeavatar-message">
-					<button type="button" class="close" onclick="$('#changeavatar-message').slideUp()">&times;</button>
-					<span id="changeavatar-error" localization>Nothing here</span>
-				</div>
-				<p localization>clicktochange</p>
-				<p align="center">
-					<img id="changeavatar-img" src="#" width="192" height="192" onclick="$('#changeavatar-input').click()" style="cursor:pointer;"/>
-				</p>
-				<div style="overflow:hidden;height:0;max-height:0;">
-					<input type="file" name="upload" id="changeavatar-input" onchange="changeavatar(this)" accept="image/png,image/jpeg"/>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button class="btn" data-dismiss="modal" aria-hidden="true" localization>back</button>
-			</div>
-		</div>
-
-		<!-- popover -->
-		<div id="changepassword" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="changepasswordLabel" aria-hidden="true" data-backdrop="static">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 id="changepasswordLabel" localization>changepassword</h3>
-			</div>
-			<div class="modal-body form-horizontal">
-				<div class="control-group">
-					<label class="control-label" for="changepassword-old" localization>oldpassword</label>
-					<div class="controls">
-						<input type="password" id="changepassword-old" onkeydown="pressenter(arguments[0],changepassword)" />
-						<span class="help-inline"></span>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="changepassword-old" localization>newpassword</label>
-					<div class="controls">
-						<input type="password" id="changepassword-new" onkeydown="pressenter(arguments[0],changepassword)" />
-						<span class="help-inline"></span>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="changepassword-old" localization>confirm</label>
-					<div class="controls">
-						<input type="password" id="changepassword-confirm" onkeydown="pressenter(arguments[0],changepassword)" />
-						<span class="help-inline"></span>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<div id="changepassword-buttons">
-					<button class="btn" onclick="changepassword()" localization>ok</button>
-					<button class="btn" data-dismiss="modal" aria-hidden="true" localization>cancel</button>
-				</div>
-			</div>
-		</div>
-
-		<!-- popover -->
-		<div id="delete" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true" data-backdrop="static">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 id="deleteLabel" localization>deleteconfirm</h3>
-			</div>
-			<div class="modal-body">
-				<p><span localization>suretodelete</span><span class="folder"></span> <span id="delete-name"></span></p>
-			</div>
-			<div class="modal-footer">
-				<div id="delete-buttons">
-					<button class="btn" onclick="deleteconfirm()" localization>ok</button>
-					<button class="btn" data-dismiss="modal" aria-hidden="true" localization>cancel</button>
-				</div>
-			</div>
-		</div>
-
-		<!-- popover -->
-		<div id="rename" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="renameLabel" aria-hidden="true" data-backdrop="static">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 id="renameLabel" localization>rename</h3>
-			</div>
-			<div class="modal-body form-horizontal">
-				<div class="control-group">
-					<label class="control-label" for="rename-inputName" localization>newname</label>
-					<div class="controls">
-						<input type="text" id="rename-inputName" onkeydown="pressenter(arguments[0],rename)" />
-						<span class="help-inline"></span>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<div id="rename-buttons">
-					<button class="btn" onclick="rename()" localization>ok</button>
-					<button class="btn" data-dismiss="modal" aria-hidden="true" localization>cancel</button>
-				</div>
-			</div>
-		</div>
-
-		<!-- popover -->
-		<div id="share" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="shareLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-			<div class="modal-header">
-				<button type="button" onclick="closeshare()" class="close">&times;</button>
-				<h3 id="shareLabel" localization>sharemanage</h3>
-			</div>
-			<div class="modal-body">
-				<p><span localization>file</span> <span id="share-name"></span> <span localization>sshareduser</span></p>
-				<div id="share-user-box">
-					<ul class="nav nav-pills nav-stacked" id="share-user-list">
-					</ul>
-				</div>
-				<div class="alert hide" id="share-message">
-					<button type="button" class="close" onclick="$('#share-message').slideUp()">&times;</button>
-					<span id="share-error" localization>Nothing here</span>
-				</div>
-				<div class="form-inline" id="share-buttons">
-					<span localization>newuser:</span>
-					<input type="text" id="share-inputName" onkeydown="pressenter(arguments[0],share)" />
-					<button class="btn" type="button" onclick="share()" localization>add</button>
-					<button class="btn pull-right" type="button" onclick="unshare()" localization>delete</button>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<div id="share-buttons">
-					<button class="btn" onclick="closeshare()" localization>back</button>
-				</div>
-			</div>
-		</div>
-
-		<!-- popover -->
-		<div id="messagedialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="messagedialogLabel" aria-hidden="true" data-backdrop="static">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3 id="messagedialogLabel">title</h3>
-			</div>
-			<div class="modal-body">
-				<p id="messagedialogContent">info</p>
-			</div>
-			<div class="modal-footer">
-				<button class="btn" data-dismiss="modal" aria-hidden="true" localization>ok</button>
-			</div>
-		</div>
-
-	</div>
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                        <textarea id="editor-textarea"></textarea>
+                        <div id="under-editor">
+                            <div id="console">
+                                <div id="console-title" class="well well-top" style="border-bottom: 1px solid #ddd; padding: 4px 0 5px 10px;" localization>console</div>
+                                <div id="console-inner">
+                                </div>
+                                <input id="console-input" type="text" style="border: none; border-radius: 0; border-top: 1px solid #ddd;" />
+                            </div>
+                            <div id="varlist">
+                                <div class="well well-top">
+                                    <div class="btn-group">
+                                        <button class="btn disabled debugandwait" type="button" title="step-title" id = "debug-step">
+                                            <i class="icon-arrow-down"></i>
+                                        </button>
+                                        <button class="btn disabled debugandwait" type="button" title="next-title" id = "debug-next">
+                                            <i class="icon-arrow-right"></i>
+                                        </button>
+                                        <button class="btn disabled debugandwait" type="button" title="finish-title" id = "debug-finish">
+                                            <i class="icon-share-alt"></i>
+                                        </button>
+                                        <button class="btn disabled debugandwait" type="button" title="continue-title" id = "debug-continue">
+                                            <i class="icon-play"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="varlistreal">
+                                    <table class="table table-hover" id="varlist-table">
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="span3" id="chatbox">
+                <div id="member-list-doc">
+                    <img src="images/character.png" width="40" height="40" class="pull-left shared-character" />
+                </div>
+                <div id="chat-show" style="height: 284px;">
+                    <div id="chat-show-inner"></div>
+                </div>
+                <div class="input-append" style="margin-bottom: 0">
+                    <input type="text" id="chat-input">
+                    <button class="btn" type="button" id="chat" title="send"><i class="icon-comment"></i></button>
+                    <button class="btn active" type="button" id="voice-on" title="voice"><i class="icon-volume-up"></i></button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </script>
+    <!-- popover -->
+    <script type="text/template" id="messagedialogTemplate">
+        <div id="messagedialog" class="modal" tabindex="-1" role="dialog" aria-labelledby="messagedialogLabel" aria-hidden="true" data-backdrop="static">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 id="messagedialogLabel">title</h3>
+            </div>
+            <div class="modal-body">
+                <p id="messagedialogContent">info</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true" localization>ok</button>
+            </div>
+        </div>
+    </script>
+    <a id="filedownload" href="data:text/plain,data" download="test.txt"><div id="filedownloaddiv" style="display:none"></div></a>
 </body>
+<!-- <script type="text/javascript" src="js/new/UserModel.js"></script>
+<script type="text/javascript" src="js/new/appView.js"></script>
+<script type="text/javascript" src="js/new/SocketView.js"></script>
+<script type="text/javascript" src="js/new/commonView.js"></script>
+<script type="text/javascript" src="js/new/loginView.js"></script>
+<script type="text/javascript" src="js/new/registerView.js"></script>
+<script type="text/javascript" src="js/new/navView.js"></script>
+<script type="text/javascript" src="js/new/fileView.js"></script>
+<script type="text/javascript" src="js/new/editor.js"></script>
+<script type="text/javascript" src="js/new/popush.js"></script> -->
 </html>
+
