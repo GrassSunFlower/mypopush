@@ -202,6 +202,7 @@ popush.initfilecontrol = popush.commonView.extend({
 		userlist.clear('#share-user-list');
 		alluserlists.push(userlist);
 		memberlist = userListAvatar('#member-list');
+		memberlistdoc = userListAvatar('#member-list-doc');
 		docshowfilter = this.allselffilter;
 	}
 });

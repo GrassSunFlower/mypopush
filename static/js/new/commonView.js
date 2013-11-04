@@ -39,7 +39,11 @@ popush.commonView = popush.SocketView.extend({
 		'leave': 'leaveFunc',
 		'rm-expr': 'rmexprFunc',
 		'add-expr': 'addexprFunc',
-		'getcontribution': 'getcontriFunc'
+		'getcontribution': 'getcontriFunc',
+		'deleted': 'deletedFunc',
+		'moved': 'movedFunc',
+		'shared': 'sharedFunc',
+		'unshared': 'unsharedFunc',
 	},
 	//贡献度事件监听
 	getcontriFunc: function(data) {
@@ -812,6 +816,55 @@ popush.commonView = popush.SocketView.extend({
 			expressionlist.setValue(data.expr, data.val);
 		}
 	},
+	deletedFunc: function(data){
+		this.closeeditor2();
+		this.showmessagebox('info', 'deleted', 1);
+	}, 
+	movedFunc: function(data){
+		var thepath = data.newPath.split('/');
+		thepath.shift();
+		var thename;
+		var realname;
+		if(dirMode == 'owned') {
+			realname = thename = thepath.pop();
+			currentDir = thepath;
+		} else {
+			var name = currentDir.shift();
+			if(thepath.length == 2) {
+				thename = thepath[1] + '@' + thepath[0];
+				realname = thepath[1];
+				currentDir = [];
+			} else {
+				realname = thename = thepath.pop();
+				thepath.unshift(thepath.shift() + '/' + thepath.shift());
+				currentDir = thepath;
+			}
+			currentDir.unshift(name);
+		}
+		var filepart = realname.split('.');
+		
+		ext = filepart[filepart.length - 1];
+		tihs.changelanguage(ext);
+		this.checkrunanddebug(ext);
+		
+		this.appendtochatbox(strings['systemmessage'], 'system', strings['movedto'] + thename, new Date(data.time));
+		$('#current-doc').html(htmlescape(thename));
+	},
+	sharedFunc: function(data){	
+		memberlistdoc.add(data);
+		memberlistdoc.setonline(data.name, false);
+		memberlistdoc.sort();
+		this.appendtochatbox(strings['systemmessage'], 'system', data.name + '&nbsp;' + strings['gotshared'], new Date(data.time));
+	},
+	unsharedFunc: function(data){
+		if(data.name == currentUser.name) {
+			this.closeeditor2();
+			this.showmessagebox('info', 'you unshared', 1);
+		} else {
+			memberlistdoc.remove(data.name);
+			this.appendtochatbox(strings['systemmessage'], 'system', data.name + '&nbsp;' + strings['unshared'], new Date(data.time));
+		}
+	},			
 	//返回登录
 	backtologin: function() {
 		$('#big-one .container').removeAttr('style');
@@ -1208,5 +1261,18 @@ popush.commonView = popush.SocketView.extend({
 			trigger: 'hover'
 		});
 		return cursor;
-	}
+	},
+	closeeditor2: function() {
+		window.app.socket.emit('leave', {});
+		this.refreshfilelist(function() {;
+		}, function() {
+			$("body").animate({
+				scrollTop: oldscrolltop
+			});
+		});
+		this.leaveVoiceRoom();
+		router.navigate('filelist', {
+			trigger: true
+		});
+	},
 });

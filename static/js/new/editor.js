@@ -143,7 +143,6 @@ popush.initeditor = popush.commonView.extend({
 			});
 			$('#voice-on').attr('data-content', strings['novoice']);
 		}
-		memberlistdoc = userListAvatar('#member-list-doc');
 		resize();
 		$(window).resize(resize);
 		$(window).scroll(function() {
