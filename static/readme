@@ -1,0 +1,40 @@
+文档结构说明
+/static/css                                        css文件夹
+        bootstrap.min.css                        bootstrap3.0的css
+        codemirror.css                                codemirror的css
+        popush.css                                popush样式
+        popush.filelist                              popush样式    
+        popush.login                              popush样式
+/static/images                                        图片文件夹        
+
+/static/index.html                                index.html
+
+/static/js                                        js文件夹
+        app.js                                        全局js,管理MVC
+        conf.js                                        配置说明
+        Chart.js                                    图表
+        codemirror.js                               codemirror代码编辑框
+        expressionlist.js                           调试变量
+        filelist.js                                 文件列表
+        firebase.js                                 
+        newMultiConection.js                        
+        socket.io.min.js
+        userlist.js
+        /new
+            /UserModel.js                             Model模型类UserModel和Userlist Collection
+            /appView.js                             通用常量View
+            /SocketView.js                          Socket controller
+            /commonView.js                          通用函数 controller
+            /loginView.js                           登录    controller\
+            /registerView.js                        注册    controller
+            /navView.js                             顶栏    controller
+            /fileView.js                            文件页面 controller
+            /editor.js                              代码编辑页面 controller
+            /popush.js                              全局常量   
+            /router.js                              Router
+        /lib                                        外部js依耐项
+        
+        /localization                                语言切换相关js
+
+                en-US.js
+                zh-CN.js
