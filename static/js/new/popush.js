@@ -1,84 +1,81 @@
-window.app.socket = io.connect('127.0.0.1:4444');
-//var currentUser;
-var currentDir;
-var currentDirString;
-var dirMode = 'owned';
-var newfiletype = 'doc';
-var docshowfilter = function(o){ return true; };
-var filelist;
-var memberlist;
-var memberlistdoc;
-var movehandler;
-var doccallback;
-var currentsharedoc;
-var filelisterror = function(){;};
-var deleteconfirm = function(){;};
-var rename = function(){;};
-var firsttofilelist = true;
-var registerLock = false;
-var operationLock = false;
-var expressionlist;
-var filecontrolscope = null;
-var contributions = [];
-var sharedocs = [];
+window.app.socket = io.connect('127.0.0.1:4444');	//连接
 
-/*ST*/
-var viewswitchLock = false;
-var chatstate = false;
-var runable = true;
+/* 全局变量和函数 */
+var currentDir;				//当前目录
+var currentDirString;		//当前目录的字符串
+var dirMode = 'owned';		//目录的模式
+var newfiletype = 'doc';	//新建文件的类型
+var filelist;				//文件列表
+var memberlist;				//文件的共享用户列表
+var memberlistdoc;			//共享用户列表文档
+var movehandler;			//移动处理器
+var doccallback;			//文档回调函数
+var expressionlist;			//调试时的变量名
+var currentsharedoc;		//当前共享文档
+var editor;					//编辑器	
+var doc;					//文档
+var docobj;					//文档对象
+var ext;
+var savetimestamp;			//存储时间标记
+var savetimeout = 500;		//存储超时时间
+var Browser = {};			//浏览器
+var s;						//浏览器版本号
+var buffertext = "";		//文本缓存
+var bufferfrom = -1;		//缓存来源
+var bufferto = -1;			//缓存去向
+var buffertimeout = SAVE_TIME_OUT;//缓存超时
+var timer = null;			//计时器
+var bps = "";				//断点集
+var runningline = -1;		//运行行数
+var cursors = {};			//光标
+var old_text;				//旧文本
+var old_bps;				//旧断点
+var oldscrolltop = 0;		//旧翻转
+var gutterclick;			
+var oldwidth;				//旧宽度
+var dochandler;				//文档处理器
+var thisPage = "";			//前一个页面
+var thisFileState = "owned";//当前文件状态
+var selected = -1;			//已选择
+var filenumber = -1;		//文件数量
+var userlist;				//用户列表
+var filecontrolscope = null;
+
+var alluserlists = [];		//所有用户列表
+var q = [];
+var bq = [];				//断点
+var contributions = [];		//共享度
+var sharedocs = [];			//共享文档
 var runableext = [
 	'c', 'cpp', 'js', 'py', 'pl', 'rb', 'lua', 'java'
 ];
-
-var debugable = true;
 var debugableext = [
 	'c', 'cpp'
 ];
-var runLock = false;
-var debugLock = false;
-var lock = false;
-var issaving = false;
-var consoleopen = true;
-var editor;
-var doc;
-var docobj;
-var ext;
-var expressionlist;
-var filelist;
-var currentDirString;
-var filelisterror = function(){;};
-var waiting = false;
-var novoice = false;
-var savetimestamp;
-var savetimeout = 500;
-var Browser = {};
+
+/* 判断 */
+var firsttofilelist = true;	//判断是否需要刷新文件列表
+var chatstate = false;		//聊天状态
+var runable = true;			//可执行
+var debugable = true;		//可调试
+var issaving = false;		//正在储存
+var consoleopen = false;	//开启运行窗口
+var novoice = false;		//无声音
+var waiting = false;		//等待
+var registerLock = false;	//注册锁
+var operationLock = false;	//操作锁
+var viewswitchLock = false;	//切换页面锁
+var runLock = false;		//运行锁
+var debugLock = false;		//调试锁
+var lock = false;			//锁
+
+
+var filelisterror = function(){;};					//文件列表错误
+var deleteconfirm = function(){;};					//确认删除
+var rename = function(){;};							//重命名
+var docshowfilter = function(o){ return true; };	//文件展示过滤器
 var ua = navigator.userAgent.toLowerCase();
-var s;
-var buffertext = "";
-var bufferfrom = -1;
-var bufferto = -1;
-var buffertimeout = SAVE_TIME_OUT;
-var timer = null;
-var runLock = false;
-var debugLock = false;
-var waiting = false;
-var q = [];
-var bq = [];
-var bps = "";
-var runningline = -1;
-var cursors = {};
-var old_text;
-var old_bps;
-var oldscrolltop = 0;
-var gutterclick;
-var oldwidth;
-var dochandler;
-var thisPage = "";
-var thisFileState = "owned";
-var selected = -1;
-var filenumber = -1;
-var alluserlists = [];
-var userlist;
+var filelisterror = function(){;};
 
 (s = ua.match(/msie ([\d.]+)/)) ? Browser.ie = s[1] :
 (s = ua.match(/firefox\/([\d.]+)/)) ? Browser.firefox = s[1] :
@@ -170,6 +167,7 @@ function getdirlink(before) {
 	}
 	return s;
 };
+// 翻译
 function translate() {
 	lang = (localStorage.getItem('lang') == 'us-en' ? 'zh-cn' : 'us-en');
 	transinto[lang]();

@@ -1,3 +1,4 @@
+// 实现页面跳转功能router，url显示不同
 popush.Application = Backbone.Router.extend({
 	fireditor: false,
 	initialize: function(el) {
@@ -11,6 +12,7 @@ popush.Application = Backbone.Router.extend({
 		'filelist': 'filelist',
 		'editor': 'editor',
 	},
+	// 登录页面的跳转
 	login: function() {
 		if (localStorage.getItem('fisrtreg') == 0) {
 			localStorage.setItem('fisrtreg', 1);
@@ -41,6 +43,7 @@ popush.Application = Backbone.Router.extend({
 		$('#login-inputName').focus();
 		thisPage = "login";
 	},
+	// 注册页面的跳转
 	register: function() {
 		$("#navcontainer").html(" ");
 		if (!$.cookie('sid')) {
@@ -56,6 +59,7 @@ popush.Application = Backbone.Router.extend({
 		$('#register-inputName').focus();
 		thisPage = "register";
 	},
+	// 文件个人中心页面的跳转
 	filelist: function() {
 		var flog = true;
 		var temp = testUser.toJSON();
@@ -110,6 +114,7 @@ popush.Application = Backbone.Router.extend({
 			this.currentView.ownedfilelist();
 		}
 	},
+	// 编辑代码页面的跳转
 	editor: function() {
 		this.clean();
 		this.currentView = new popush.editorView({
@@ -125,6 +130,7 @@ popush.Application = Backbone.Router.extend({
 		$('#nav-avatar').attr('src', testUser.get("avatar"));
 		dirMode == 'owned'
 	},
+	// 大页面（登陆、注册、文件、编辑）的clean
 	clean: function() {
 		if (this.currentView) {
 			this.currentView.remove();
@@ -132,6 +138,7 @@ popush.Application = Backbone.Router.extend({
 			$(this.el).html('');
 		}
 	},
+	// 小页面（弹出的对话框等）的clean
 	subclean: function() {
 		if (this.subView) {
 			this.subView.remove();
@@ -139,8 +146,14 @@ popush.Application = Backbone.Router.extend({
 		}
 	}
 });
+
+// 从localStorage提取用户选择的语言
 if (localStorage.getItem('lang') == null || localStorage.getItem('lang') != 'us-en') localStorage.setItem('lang', 'zh-cn');
 	transinto[localStorage.getItem('lang')]();
+
+// router生效，并将id为container的控件作为渲染的容器
 new popush.Application('#container');
 Backbone.history.start();
+
+// 显示页面
 $('boby').show();

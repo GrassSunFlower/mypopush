@@ -1,9 +1,11 @@
+//commonView 封装socket
 popush.commonView = popush.SocketView.extend({
 	initialize: function() {
 		this.__initialize();
 
 	},
 	va: window.app.va,
+	//对应socket.on事件，继承原生链SockView,
 	socket_events: {
 		'version': 'verFunc',
 		'connect': 'connFunc',
@@ -39,12 +41,15 @@ popush.commonView = popush.SocketView.extend({
 		'add-expr': 'addexprFunc',
 		'getcontribution': 'getcontriFunc'
 	},
+	//贡献度事件监听
 	getcontriFunc: function(data) {
 		contributions = data.contribution;
 	},
+	//文件路径filter
 	allselffilter: function(o) {
 		return currentDir.length > 1 || o.owner.name == testUser.get('name');
 	},
+	//同步版本号
 	verFunc: function(data) {
 		if (data.version != VERSION) {
 			location.reload('Refresh');
@@ -68,9 +73,11 @@ popush.commonView = popush.SocketView.extend({
 		}
 		this.va.loadDone = true;
 	},
+	//与服务器处理事件链接
 	connFunc: function(data) {
 		window.app.socket.emit('version', {});
 	},
+	//登录事件监听
 	loginFunc: function(data) {
 		if (data.err) {
 			if (data.err == 'expired') {
@@ -81,22 +88,12 @@ popush.commonView = popush.SocketView.extend({
 			}
 		} else {
 			operationLock = false;
-			//currentUser = data.user;
-			//testUser.clear({silent : true});
 			testUser.set(data.user, {
 				silent: true
 			});
 			router.navigate('filelist', {
 				trigger: true
 			});
-			//$('#ownedfile').show();
-			// $('#ownedfileex').hide();
-			// $('#sharedfile').removeClass('active');
-			// $('#share-manage-link').hide();
-			// $('#nav-head').fadeIn('fast');
-			// $('#filecontrol').fadeIn('fast');
-			//$('#nav-user-name').text(data.user.name);
-			//$('#nav-avatar').attr('src', data.user.avatar);
 
 			$.cookie('sid', data.sid, {
 				expires: 7
@@ -122,12 +119,12 @@ popush.commonView = popush.SocketView.extend({
 			filelist.formdocs(data.user.docs, docshowfilter);
 
 			memberlist.clear();
-			// memberlist.add(data.user);
 			memberlist.add(testUser.toJSON());
 		}
 		this.cleanloading();
 		this.va.loginLock = false;
 	},
+	//注册事件
 	regFunc: function(data) {
 		if (data.err) {
 			$('#register-error').attr('str', data.err);
@@ -146,9 +143,11 @@ popush.commonView = popush.SocketView.extend({
 		this.va.registerLock = false;
 		localStorage.setItem('fisrtreg', 0);
 	},
+	//文件事件监听
 	docFunc: function(data) {
 		dochandler(data);
 	},
+	//新建文件事件
 	newFunc: function(data) {
 		if (data.err) {
 			this.showmessageindialog('newfile', data.err);
@@ -164,6 +163,7 @@ popush.commonView = popush.SocketView.extend({
 		this.refreshfilelist(function() {;
 		});
 	},
+	//修改密码事件监听
 	passwordFunc: function(data) {
 		if (data.err) {
 			this.showmessageindialog('changepassword', data.err, 0);
@@ -174,6 +174,7 @@ popush.commonView = popush.SocketView.extend({
 		this.removeloading('changepassword-buttons');
 		operationLock = false;
 	},
+	//删除文件监听
 	deleteFunc: function(data) {
 		$('#delete').modal('hide');
 		if (data.err) {
@@ -186,9 +187,11 @@ popush.commonView = popush.SocketView.extend({
 		}
 		this.removeloading('delete-buttons');
 	},
+	//移动事件监听
 	moveFunc: function(data) {
 		movehandler(data);
 	},
+	//分享事件
 	sharedone: function(data) {
 		if (!data.err) {
 			userlist.fromusers(data.doc.members, '#share-user-list');
@@ -197,6 +200,7 @@ popush.commonView = popush.SocketView.extend({
 		this.removeloading('share-buttons');
 		operationLock = false;
 	},
+	//分享文件属性
 	shareFunc: function(data) {
 		if (data.err) {
 			$('#share-error').attr('str', data.err);
@@ -210,6 +214,7 @@ popush.commonView = popush.SocketView.extend({
 			});
 		}
 	},
+	//取消分享
 	unshareFunc: function(data) {
 		if (data.err) {
 			$('#share-error').attr('str', data.err);
@@ -223,23 +228,18 @@ popush.commonView = popush.SocketView.extend({
 			});
 		}
 	},
+	//头像
 	avatarFunc: function(data) {
 		if (data.err) {
 			$('#changeavatar-error').attr('str', data.err);
 			this.showmessage('changeavatar-message', data.err, 'error');
 		} else {
-			//currentUser.avatar = data.url;
 			testUser.set({
 				avatar: data.url
 			});
-			// $('#nav-avatar').attr('src', currentUser.avatar);
-			// $('#changeavatar-img').attr('src', currentUser.avatar);
-			// $('img.user-' + currentUser.name).attr('src', currentUser.avatar);
 			$('#nav-avatar').attr('src', testUser.get('avatar'));
 			$('#changeavatar-img').attr('src', testUser.get('avatar'));
 			$('img.user-' + testUser.get('name')).attr('src', testUser.get('avatar'));
-			// memberlist.refreshpopover(currentUser);
-			// memberlistdoc.refreshpopover(currentUser);
 			memberlist.refreshpopover(testUser.toJSON());
 			memberlistdoc.refreshpopover(testUser.toJSON());
 			$('#changeavatar-error').attr('str', 'changeavatarok');
@@ -247,6 +247,7 @@ popush.commonView = popush.SocketView.extend({
 		}
 		operationLock = false;
 	},
+	//设断点
 	setFunc: function(data) {
 		savetimestamp = 1;
 		this.setsavedthen(1);
@@ -358,6 +359,7 @@ popush.commonView = popush.SocketView.extend({
 		delete data.debugging;
 		delete data.state;
 	},
+	//调试调用函数
 	joinFunc: function(data) {
 		if (data.err) {
 			showmessageindialog('openeditor', data.err);
@@ -376,6 +378,7 @@ popush.commonView = popush.SocketView.extend({
 			};
 		}
 	},
+	//用户不合法
 	unauthorizedFunc: function(data) {
 		this.backtologin();
 		$('#login-error').attr('str', 'needrelogin');
@@ -392,6 +395,7 @@ popush.commonView = popush.SocketView.extend({
 		}
 		delete window.voiceConnection;
 	},
+	//断点设置成功
 	bpsokFunc: function(data) {
 		var chg = bq.shift();
 		if (!chg)
@@ -416,6 +420,7 @@ popush.commonView = popush.SocketView.extend({
 			window.app.socket.emit('bps', bq[0]);
 		}
 	},
+	//断点事件
 	bpsFunc: function(data) {
 		var tfrom = data.from;
 		var tto = data.to;
@@ -477,6 +482,7 @@ popush.commonView = popush.SocketView.extend({
 			window.app.socket.emit('bps', bq[0]);
 		}
 	},
+	//成功事件
 	okFunc: function(data) {
 		var chg = q.shift();
 		if (!chg)
@@ -499,6 +505,7 @@ popush.commonView = popush.SocketView.extend({
 			window.app.socket.emit('bps', bq[0]);
 		}
 	},
+	//改变
 	changeFunc: function(data) {
 		lock = true;
 		var tfrom = data.from;
@@ -672,20 +679,25 @@ popush.commonView = popush.SocketView.extend({
 		cursors[data.name].pos = data.from + data.text.length;
 		editor.addWidget(pos, cursors[data.name].element, false);
 	},
+	//运行事件
 	runFunc: function(data) {
 		this.appendtochatbox(strings['systemmessage'], 'system', data.name + '&nbsp;&nbsp;' + strings['runsaprogram'], new Date(data.time));
 		this.setrun();
 		operationLock = false;
 	},
+	//输入
 	stdinFunc: function(data) {
 		this.appendtoconsole(data.data, 'stdin');
 	},
+	//输出
 	stdoutFunc: function(data) {
 		this.appendtoconsole(data.data);
 	},
+	//错误信息
 	stderrFunc: function(data) {
 		this.appendtoconsole(data.data, 'stderr');
 	},
+	//退出
 	exitFunc: function(data) {
 		operationLock = false;
 		if (data.err.code !== undefined)
@@ -723,6 +735,7 @@ popush.commonView = popush.SocketView.extend({
 		this.setrunanddebugstate();
 		$('#console-title').text(strings['console'] + strings['finished']);
 	},
+	//调试
 	debugFunc: function(data) {
 		this.appendtochatbox(strings['systemmessage'], 'system', data.name + '&nbsp;&nbsp;' + strings['startdebug'], new Date(data.time));
 		this.setdebug();
@@ -741,6 +754,7 @@ popush.commonView = popush.SocketView.extend({
 
 		operationLock = false;
 	},
+	//运行
 	runningFunc: function(data) {
 		if (!debugLock)
 			return;
@@ -749,6 +763,7 @@ popush.commonView = popush.SocketView.extend({
 		$('.debugandwait').addClass('disabled');
 		$('#console-title').text(strings['console']);
 	},
+	//等待队列
 	waitingFunc: function(data) {
 		if (!debugLock)
 			return;
@@ -769,6 +784,7 @@ popush.commonView = popush.SocketView.extend({
 		else
 			$('#console-title').text(strings['console'] + strings['waiting'] + strings['nosource']);
 	},
+	//用户离开
 	leaveFunc: function(data) {
 		memberlistdoc.setonline(data.name, false);
 		memberlistdoc.sort();
@@ -779,20 +795,24 @@ popush.commonView = popush.SocketView.extend({
 			delete cursors[data.name];
 		}
 	},
+	//聊天
 	chatFunc: function(data) {
 		var text = htmlescape(data.text);
 		var time = new Date(data.time);
 		this.appendtochatbox(data.name, (data.name == testUser.get('name') ? 'self' : ''), text, time);
 	},
+	//移除变量
 	rmexprFunc: function(data) {
 		expressionlist.removeElementByExpression(data.expr);
 	},
+	//添加监视变量
 	addexprFunc: function(data) {
 		if (data.expr) {
 			expressionlist.addExpression(data.expr);
 			expressionlist.setValue(data.expr, data.val);
 		}
 	},
+	//返回登录
 	backtologin: function() {
 		$('#big-one .container').removeAttr('style');
 		$('#big-one').animate({
@@ -815,6 +835,7 @@ popush.commonView = popush.SocketView.extend({
 		$('#footer').fadeIn('fast');
 		$('.modal').modal('hide');
 	},
+	//展示信息
 	showmessage: function(id, stringid, type) {
 		var o = $('#' + id);
 		o.removeClass('alert-error');
@@ -828,6 +849,7 @@ popush.commonView = popush.SocketView.extend({
 			$('#' + id + ' span').html(stringid);
 		o.slideDown();
 	},
+	//
 	showmessageindialog: function(id, stringid, index) {
 		if (index === undefined) {
 			$('#' + id + ' .control-group').addClass('error');
@@ -843,6 +865,7 @@ popush.commonView = popush.SocketView.extend({
 				$('#' + id + ' .help-inline:eq(' + index + ')').text(stringid);
 		}
 	},
+	//消息标签
 	showmessagebox: function(title, content, timeout) {
 		if (strings[title])
 			$('#messagedialogLabel').html(strings[title]);
@@ -855,6 +878,7 @@ popush.commonView = popush.SocketView.extend({
 		$('#messagedialog').modal('show');
 		t = setTimeout('$(\'#messagedialog\').modal(\'hide\');', timeout * 1000);
 	},
+	//加载
 	loading: function(id) {
 		if (this.va.loadings[id])
 			return;
@@ -866,6 +890,7 @@ popush.commonView = popush.SocketView.extend({
 			loading: $('#' + id + '-loading')
 		};
 	},
+	//移除加载
 	removeloading: function(id) {
 		if (!this.va.loadings[id])
 			return;
@@ -873,11 +898,13 @@ popush.commonView = popush.SocketView.extend({
 		this.va.loadings[id].loading.remove();
 		delete this.va.loadings[id];
 	},
+	//移除loading
 	cleanloading: function() {
 		for (var k in this.va.loadings) {
 			this.removeloading(k);
 		}
 	},
+	//得到文件路径
 	getdirstring: function() {
 		if (dirMode == 'owned')
 			return '/' + currentDir.join('/');

@@ -1,3 +1,4 @@
+//存储登陆相关常量
 popush.appView = Backbone.View.extend({
 	loadDone: false,
 	failed: false,

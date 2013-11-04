@@ -1,3 +1,4 @@
+// 注册页面View
 popush.registerView = popush.commonView.extend({
 	template: _.template($("#registerTemplate").html()),
 	initialize: function() {
@@ -13,7 +14,6 @@ popush.registerView = popush.commonView.extend({
 	},
 	render: function() {
 		this.$el.html(this.template);
-		// resize();
 		return this;
 	},
 	events: {
@@ -23,6 +23,7 @@ popush.registerView = popush.commonView.extend({
 		'focus #register-inputName': 'checkvalid',
 		'keydown': 'pressenter'
 	},
+	// 实时检测用户名是否正确
 	checkvalid: function() {
 		var name = $('#register-inputName').val();
 		if (!/^[A-Za-z0-9]*$/.test(name)) {
@@ -37,6 +38,7 @@ popush.registerView = popush.commonView.extend({
 			$('#register-message').slideUp();
 		}
 	},
+	// 点击注册后的函数
 	register: function() {
 		var name = $('#register-inputName').val();
 		var pass = $('#register-inputPassword').val();
@@ -70,17 +72,14 @@ popush.registerView = popush.commonView.extend({
 			password: pass,
 			avatar: 'images/character.png'
 		});
-		// window.app.socket.emit('register', {
-		// 	name: name,
-		// 	password: pass,
-		// 	avatar: 'images/character.png'
-		// });
 	},
+	// 回车键事件，进行注册
 	pressenter: function(e) {
 		e = e || event;
 		if (e.keyCode == 13 && this.va.loadDone)
 			this.register();
 	},
+	// 点击登录按钮
 	loginPage: function() {
 		this.router.navigate('login', {
 			trigger: true

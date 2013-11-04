@@ -1,3 +1,4 @@
+// 登录页面View
 popush.loginView = popush.commonView.extend({
 	template: _.template($('#loginTemplate').html()),
 	initialize: function() {
@@ -22,6 +23,7 @@ popush.loginView = popush.commonView.extend({
 		'click #register-page': 'registerPage',
 		'keydown input': 'pressenter'
 	},
+	// 检测是否连接上服务器的函数
 	loadfailed: function() {
 		if (this.va.loadDone)
 			return;
@@ -30,6 +32,7 @@ popush.loginView = popush.commonView.extend({
 		$('#login-error').attr('str', 'loadfailed');
 		this.showmessage('login-message', 'loadfailed');
 	},
+	// 点击登录后的函数
 	login: function() {
 		var name = $('#login-inputName').val();
 		var pass = $('#login-inputPassword').val();
@@ -46,16 +49,14 @@ popush.loginView = popush.commonView.extend({
 			"name": $('#login-inputName').val(),
 			"password": $('#login-inputPassword').val(),
 		});
-		// window.app.socket.emit('login', {
-		// 	name:$('#login-inputName').val(),
-		// 	password:$('#login-inputPassword').val()
-		// });
 	},
+	// 回车键事件，进行登录
 	pressenter: function(e) {
 		e = e || event;
 		if (e.keyCode == 13 && this.va.loadDone)
 			this.login();
 	},
+	// 点击注册按钮
 	registerPage: function() {
 		this.router.navigate('register', {
 			trigger: true

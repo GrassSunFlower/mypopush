@@ -1,3 +1,4 @@
+//协同编辑页面
 popush.initeditor = popush.commonView.extend({
 	selfIniteditor: null,
 	initialize: function() {
@@ -5,9 +6,11 @@ popush.initeditor = popush.commonView.extend({
 		selfIniteditor = this;
 		this.initeditor();
 	},
+	//获取窗口高度
 	winHeight: function() {
 		return window.innerHeight || (document.documentElement || document.body).clientHeight;
 	},
+	//退出全屏，将窗口置为正常大小
 	setNormalScreen: function() {
 		var wrap = editor.getWrapperElement();
 		$('#editormain').css('position', 'fixed');
@@ -19,6 +22,7 @@ popush.initeditor = popush.commonView.extend({
 		editor.refresh();
 		editor.focus();
 	},
+	//初始化CodeMirror
 	initeditor: function() {
 		var self = selfIniteditor;
 		CodeMirror.on(window, "resize", function() {
@@ -43,6 +47,7 @@ popush.initeditor = popush.commonView.extend({
 		editor.on("gutterClick", function(cm, n) {
 			gutterclick(cm, n);
 		});
+		//定义变量列表
 		expressionlist = expressionList('#varlist-table');
 		expressionlist.renameExpression = function(id) {
 			this.doneall();
@@ -124,6 +129,7 @@ popush.initeditor = popush.commonView.extend({
 		if (!ENABLE_DEBUG) {
 			$('#editor-debug').remove();
 		}
+		//针对浏览器初始化语音
 		if ((!Browser.chrome || parseInt(Browser.chrome) < 18) &&
 			(!Browser.opera || parseInt(Browser.opera) < 12)) {
 			novoice = true;
@@ -144,6 +150,7 @@ popush.initeditor = popush.commonView.extend({
 			$('#editormain-inner').css('left', (-$(window).scrollLeft()) + 'px');
 		});
 	},
+	//发送不同版本号字符串
 	sendbuffer: function() {
 		if (bufferfrom != -1) {
 			if (bufferto == -1) {
@@ -176,6 +183,7 @@ popush.initeditor = popush.commonView.extend({
 			buffertimeout = SAVE_TIME_OUT;
 		}
 	},
+	//调试时停留在断点处
 	havebreakat: function(cm, n) {
 		var info = cm.lineInfo(n);
 		if (info && info.gutterMarkers && info.gutterMarkers["breakpoints"]) {
@@ -183,6 +191,7 @@ popush.initeditor = popush.commonView.extend({
 		}
 		return "0";
 	},
+	//从此断点到另一断点
 	sendbreak: function(from, to, text) {
 		var req = {
 			version: doc.version,
@@ -195,6 +204,7 @@ popush.initeditor = popush.commonView.extend({
 		}
 		bq.push(req);
 	},
+	//设置正在保存
 	setsaving: function() {
 		$('#current-doc-state').addClass('red');
 		$('#current-doc-state').text(strings['saving...']);
@@ -210,6 +220,7 @@ popush.initeditor = popush.commonView.extend({
 		issaving = true;
 		this.setrunanddebugstate();
 	},
+	//保存
 	save: function() {
 		this.setsaving();
 		if (timer != null) {
@@ -217,11 +228,13 @@ popush.initeditor = popush.commonView.extend({
 		}
 		timer = setTimeout("selfIniteditor.sendbuffer()", buffertimeout);
 	},
+	//设置已保存
 	setsaved: function() {
 		savetimestamp = new Date().getTime();
 		setTimeout('selfIniteditor.setsavedthen(' + savetimestamp + ')', savetimeout);
 		savetimeout = 500;
 	},
+	//触发事件
 	registereditorevent: function() {
 		var self = selfIniteditor;
 
@@ -264,21 +277,6 @@ popush.initeditor = popush.commonView.extend({
 				}
 			}
 
-			/*if (cfrom == cto && 
-						(cfrom == bufferfrom + buffertext.length || bufferfrom == -1)
-						&& cattext.length == 1 && 
-						((cattext[0] >= 'a' && cattext[0] <= 'z') || (cattext[0] >= 'A' && cattext[0] <= 'Z') ||
-						(cattext[0] >= '0' && cattext[0] <= '9'))){
-						if (bufferfrom == -1){
-							buffertext = cattext;
-							bufferfrom = cfrom;
-						}
-						else {
-							buffertext += cattext;
-						}
-						save();
-						return;
-					}*/
 			var bfrom = chg.from.line;
 			var bto = chg.to.line;
 
@@ -298,14 +296,6 @@ popush.initeditor = popush.commonView.extend({
 				for (var i = 0; i < chg.text.length; i++) {
 					btext += self.havebreakat(editor, bfrom + i);
 				}
-				/*
-						if (chg.text[0] == "")
-							btext = havebreakat(editor, bfrom);
-						//var btext = "";
-						for (var i = 0; i < chg.text.length - 2; i++){
-							btext += "0";
-						}
-						btext[btext.length-1] = bps[bto];*/
 				self.sendbreak(bfrom, bto + 1, btext);
 				return;
 			}
@@ -389,12 +379,14 @@ popush.initeditor = popush.commonView.extend({
 
 		});
 	},
+	//ctrl-s对应保存事件
 	saveevent: function() {
 		if (savetimestamp != 0)
 			selfIniteditor.setsavedthen(savetimestamp);
 		savetimestamp = 0;
 	},
 });
+//control层
 popush.editorView = popush.commonView.extend({
 	template: _.template($("#editorTemplate").html()),
 	initialize: function() {
@@ -422,6 +414,7 @@ popush.editorView = popush.commonView.extend({
 		'click #voice-on': 'voice',
 		'click #logoutId': 'logout'
 	},
+	//登出
 	logout: function() {
 		window.app.socket.emit('logout', {});
 		firsttofilelist = true;
@@ -431,9 +424,11 @@ popush.editorView = popush.commonView.extend({
 		});
 		this.backtologin();
 	},
+	//得到页面高度
 	winHeight: function() {
 		return window.innerHeight || (document.documentElement || document.body).clientHeight;
 	},
+	//设置全屏
 	setFullScreen: function() {
 		var wrap = editor.getWrapperElement();
 		$('#editormain').css('position', 'static');
@@ -446,6 +441,7 @@ popush.editorView = popush.commonView.extend({
 		editor.refresh();
 		editor.focus();
 	},
+	//弹出聊天框
 	togglechat: function(o) {
 		if (viewswitchLock)
 			return;
@@ -468,7 +464,7 @@ popush.editorView = popush.commonView.extend({
 		resize();
 		chatstate = !chatstate;
 	},
-
+	//运行程序
 	run: function() {
 		if (!this.runenabled())
 			return;
@@ -483,6 +479,7 @@ popush.editorView = popush.commonView.extend({
 			});
 		}
 	},
+	//调试程序
 	debug: function() {
 		if (!this.debugenabled())
 			return;
@@ -498,6 +495,7 @@ popush.editorView = popush.commonView.extend({
 			});
 		}
 	},
+	//控制台弹出
 	toggleconsole: function() {
 		if (consoleopen) {
 			this.closeconsole();
@@ -505,7 +503,7 @@ popush.editorView = popush.commonView.extend({
 			this.openconsole();
 		}
 	},
-
+	//离开语音聊天
 	leaveVoiceRoom: function() {
 		while (window.userArray.length > 0) {
 			$(window.audioArray[window.userArray.shift()]).remove();
@@ -527,7 +525,7 @@ popush.editorView = popush.commonView.extend({
 		window.voiceConnection.leave();
 		delete window.voiceConnection;
 	},
-
+	//关闭协同编辑页面
 	closeeditor: function() {
 		window.app.socket.emit('leave', {});
 		this.refreshfilelist(function() {;
@@ -541,7 +539,7 @@ popush.editorView = popush.commonView.extend({
 			trigger: true
 		});
 	},
-
+	//控制台输入
 	stdin: function() {
 		if (debugLock && waiting)
 			return;
@@ -558,31 +556,31 @@ popush.editorView = popush.commonView.extend({
 
 		$('#console-input').val('');
 	},
-
+	//逐语句调试
 	debugstep: function() {
 		if (debugLock && waiting) {
 			window.app.socket.emit('step', {});
 		}
 	},
-
+	//逐过程调试
 	debugnext: function() {
 		if (debugLock && waiting) {
 			window.app.socket.emit('next', {});
 		}
 	},
-
+	//调试结束
 	debugfinish: function() {
 		if (debugLock && waiting) {
 			window.app.socket.emit('finish', {});
 		}
 	},
-
+	//继续调试
 	debugcontinue: function() {
 		if (debugLock && waiting) {
 			window.app.socket.emit('resume', {});
 		}
 	},
-
+	//聊天
 	chat: function() {
 		var text = $('#chat-input').val();
 		if (text == '')
@@ -593,7 +591,7 @@ popush.editorView = popush.commonView.extend({
 		});
 		$('#chat-input').val('');
 	},
-
+	//语音聊天
 	voice: function() {
 		if (novoice)
 			return;
@@ -706,12 +704,13 @@ popush.editorView = popush.commonView.extend({
 			this.leaveVoiceRoom();
 		}
 	},
+	//控制台输入，回车快捷键
 	pressenter1: function(e) {
 		e = e || event;
 		if (e.keyCode == 13 && this.va.loadDone)
 			this.stdin();
 	},
-
+	//聊天输入，回车快捷键
 	pressenter2: function(e) {
 		e = e || event;
 		if (e.keyCode == 13 && this.va.loadDone)

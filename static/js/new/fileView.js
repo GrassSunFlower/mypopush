@@ -1,3 +1,4 @@
+// 文件个人中心的页面初始化
 popush.initfilecontrol = popush.commonView.extend({
 	initialize: function() {
 		this.initfilecontrol();
@@ -29,9 +30,11 @@ popush.initfilecontrol = popush.commonView.extend({
 			});
 		});
 	},
+	// 绑定文件个人中心页面的点击事件
 	initfilelistevent: function(fl) {
 		var self = this;
 
+		// 点击文件或文件夹名的事件
 		fl.onname = function(o) {
 			if (operationLock)
 				return;
@@ -57,6 +60,8 @@ popush.initfilecontrol = popush.commonView.extend({
 				});
 			}
 		};
+
+		// 点击删除文件按钮的事件
 		fl.ondelete = function(o) {
 			if (o.type == 'dir')
 				$('#delete').find('.folder').text(strings['folder']);
@@ -74,6 +79,8 @@ popush.initfilecontrol = popush.commonView.extend({
 				});
 			};
 		};
+
+		// 点击重命名按钮的事件
 		fl.onrename = function(o) {
 			$('#rename-inputName').val(o.name);
 			$('#rename .control-group').removeClass('error');
@@ -116,6 +123,8 @@ popush.initfilecontrol = popush.commonView.extend({
 				});
 			};
 		};
+
+		// 点击共享管理按钮的事件
 		fl.onshare = function(o) {
 			$('#share-name').text(o.name);
 			$('#share-inputName').val('');
@@ -124,6 +133,8 @@ popush.initfilecontrol = popush.commonView.extend({
 			$('#share').modal('show');
 			currentsharedoc = o;
 		};
+
+		// 点击下载文件按钮的事件
 		fl.ondownload = function(o) {
 			if (operationLock)
 				return;
@@ -146,43 +157,21 @@ popush.initfilecontrol = popush.commonView.extend({
 			emitted = true;
 			operationLock = false;
 		};
-		fl.onstatistics = function(o) {
-			if (operationLock)
-				return;
-			operationLock = true;
-			var oname = o.path.split('/');
-			oname = oname[oname.length - 1];
-			for (var i = 0; i < sharedocs.length; i++) {
-				var docname = sharedocs[i].path.split('/');
-				docname = docname[docname.length - 1];
-				if (oname == docname) {
-					if (!sharedocs[i].score) {
-						alert("服务器忙，请稍后再试");
-					} else {
-						var string = "";
-						for (var j = 0; j < sharedocs[i].score.length; j++) {
-							string += "用户" + sharedocs[i].score[j][0] + "的贡献积分为" + sharedocs[i].score[j][1] + ";";
-						}
-						alert(string);
-					}
-				}
-			}
-			operationLock = false;
-		};
-		fl.onstatistics = function(o) {
-			if (operationLock)
-				return;
-			operationLock = true;
-			var oname = o.path.split('/');
-			oname = oname[oname.length - 1];
-			for (var i = 0; i < sharedocs.length; i++) {
-				var docname = sharedocs[i].path.split('/');
-				docname = docname[docname.length - 1];
-				if (oname == docname) {
-					if (!sharedocs[i].score) {
-						alert("服务器忙，请稍后再试");
-					} else {
 
+		// 点击查看贡献积分按钮的事件
+		fl.onstatistics = function(o) {
+			if (operationLock)
+				return;
+			operationLock = true;
+			var oname = o.path.split('/');
+			oname = oname[oname.length - 1];
+			for (var i = 0; i < sharedocs.length; i++) {
+				var docname = sharedocs[i].path.split('/');
+				docname = docname[docname.length - 1];
+				if (oname == docname) {
+					if (!sharedocs[i].score) {
+						alert("服务器忙，请稍后再试");
+					} else {
 						var data = [];
 						var labels = [];
 						for (var j = 0; j < sharedocs[i].score.length; j++) {
@@ -197,7 +186,6 @@ popush.initfilecontrol = popush.commonView.extend({
 								data: data
 							}]
 						}
-
 						var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Bar(bardata);
 						$('#canvasModal').modal('toggle')
 					}
@@ -206,6 +194,7 @@ popush.initfilecontrol = popush.commonView.extend({
 			operationLock = false;
 		};
 	},
+	// 文件个人中心页面初始化
 	initfilecontrol: function() {
 		filelist = fileList('#file-list-table');
 		filelist.clear();
@@ -216,6 +205,8 @@ popush.initfilecontrol = popush.commonView.extend({
 		docshowfilter = this.allselffilter;
 	}
 });
+
+// 文件个人中心页面View
 popush.filecontrolView = popush.commonView.extend({
 	template: _.template($("#filecontrolTemplate").html()),
 	initialize: function() {
@@ -242,6 +233,7 @@ popush.filecontrolView = popush.commonView.extend({
 		'click #unshare-button': 'unshare',
 		'click #logoutId': 'logout'
 	},
+	// 登出函数
 	logout: function() {
 		window.app.socket.emit('logout', {});
 		firsttofilelist = true;
@@ -251,6 +243,7 @@ popush.filecontrolView = popush.commonView.extend({
 		});
 		this.backtologin();
 	},
+	// 点击新建文件
 	newfileopen: function() {
 		$('#newfile-inputName').val('');
 		$('#newfile .control-group').removeClass('error');
@@ -258,8 +251,8 @@ popush.filecontrolView = popush.commonView.extend({
 		$('#newfileLabel').text(strings['newfile']);
 		newfiletype = 'doc';
 		$("#newfile-inputName").focus();
-		//$("#newfile").modal('toggle');
 	},
+	// 点击新建文件夹
 	newfolderopen: function() {
 		$('#newfile-inputName').val('');
 		$('#newfile .control-group').removeClass('error');
@@ -268,6 +261,7 @@ popush.filecontrolView = popush.commonView.extend({
 		newfiletype = 'dir';
 		$("#newfile-inputName").focus();
 	},
+	// 点击拥有的文件
 	ownedfilelist: function() {
 		if (operationLock)
 			return;
@@ -287,6 +281,7 @@ popush.filecontrolView = popush.commonView.extend({
 	allsharefilter: function(o) {
 		return currentDir.length > 1 || o.owner.name != testUser.get('name');
 	},
+	// 点击共享的文件
 	sharedfilelist: function() {
 		if (dirMode == 'shared')
 			return;
@@ -305,6 +300,7 @@ popush.filecontrolView = popush.commonView.extend({
 		$('#ownedfileex').show();
 		$('#sharedfile').addClass('active');
 	},
+	// 新建文件和文件夹确认后
 	newfile: function() {
 		var name = $('#newfile-inputName').val();
 		name = $.trim(name);
@@ -329,22 +325,27 @@ popush.filecontrolView = popush.commonView.extend({
 			path: currentDirString + '/' + name
 		});
 	},
+	// 回车键函数，进行文件和文件夹的新建
 	pressenter_newfile: function(e) {
 		e = e || event;
 		if (e.keyCode == 13 && this.va.loadDone)
 			this.newfile();
 	},
+	// 删除文件确认
 	deleteconfirm: function() {
 		deleteconfirm();
 	},
+	// 重命名确认
 	rename: function() {
 		rename();
 	},
+	// 回车键函数，进行文件和文件夹名的新建
 	pressenter_rename: function(e) {
 		e = e || event;
 		if (e.keyCode == 13 && this.loadDone)
 			this.rename();
 	},
+	// 共享管理窗口的关闭
 	closeshare: function() {
 		if (operationLock)
 			return;
@@ -352,11 +353,13 @@ popush.filecontrolView = popush.commonView.extend({
 		});
 		$('#share').modal('hide');
 	},
+	// 回车键函数，进行文件和文件夹的共享
 	pressenter_share: function(e) {
 		e = e || event;
 		if (e.keyCode == 13 && this.va.loadDone)
 			this.share();
 	},
+	// 实现新用户的共享
 	share: function() {
 		var name = $('#share-inputName').val();
 		if (name == '') {
@@ -376,6 +379,7 @@ popush.filecontrolView = popush.commonView.extend({
 			trigger: true
 		});
 	},
+	// 实现用户的共享取消
 	unshare: function() {
 		if (selected == -1) {
 			$('#share-error').attr('str', 'selectuser');

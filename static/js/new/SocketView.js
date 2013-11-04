@@ -1,3 +1,4 @@
+//socket事件代理
 popush.SocketView = Backbone.View.extend({
 	initialize: function() {
 		this.__initialize();
