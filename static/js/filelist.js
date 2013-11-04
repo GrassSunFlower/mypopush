@@ -108,12 +108,12 @@ function fileList(table) {
 			if(namesplit.length == 1)
 				ext = 'unknown';
 			var isdoc = (o.type == 'doc' ? true : false);
-
+			var sharebutton = '<button id="share-status" class="col3" title="查看贡献度" onclick="allFileLists['+n+'].onstatistics(allFileLists['+n+'].elements['+i+'])" str=' + (o.shared?'shared':'') + ' localization>' + strings['shared']+ '</button>';
 			var toAppend = '<tr>' +
 				'<td class="col1"><img src="' + getpic(o.type, o.shared, ext) + '" height="32" width="32" /></td>' +
 				'<td class="col2"><a href="javascript:;" onclick="allFileLists['+n+'].onname(allFileLists['+n+'].elements['+i+'])">' + 
 				htmlescape(o.showname) + '</a></td>' +
-				(mode & 2?('<td class="col3" onclick="allFileLists['+n+'].onstatistics(allFileLists['+n+'].elements['+i+'])" str=' + (o.shared?'shared':'') + ' localization>' + (o.shared?strings['shared']:'')/* + ((o.shared&&o.score)?('<br />'+o.score):'')*/ + '</td>'):
+				(mode & 2?('<td> <a id="share-status" class="col3" title="查看贡献度" onclick="allFileLists['+n+'].onstatistics(allFileLists['+n+'].elements['+i+'])" str=' + (o.shared?'shared':'') + ' localization>' + (o.shared?strings['shared']:'')+ '</a></td>'):
 				'<td class="col3 owner"><img class="user-' + o.owner.name + '" src="' + o.owner.avatar + '" width="32" height="32"/>' + o.owner.name + '</td>') +
 				'<td class="col4">' + o.time + '</td>' +
 				'<td class="col5"><div class="dropdown">' +

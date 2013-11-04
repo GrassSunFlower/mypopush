@@ -118,6 +118,6 @@ strings = {
 	'changeword'					:'更改字体',
 	'back-to-login'					:'回到登陆',
 	'download'						:'文件下载',
-	'contribution'					:'贡献度'
+	'contribution'					:'查看贡献度'
 };
 };

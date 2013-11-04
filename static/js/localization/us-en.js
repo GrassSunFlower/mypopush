@@ -115,6 +115,6 @@ strings = {
 	'changeword'					:'Change font',
 	'back-to-login'					:'Back to login',
 	'download'						:'File Download',
-	'contribution'					:'Contribution'
+	'contribution'					:'Get Contribution'
 };
 };

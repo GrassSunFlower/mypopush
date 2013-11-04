@@ -1,62 +1,4 @@
-var allUserLists = [];
-
-function userList(div) {
-
-	var obj = $(div);
-	
-	var elements = [];
-	
-	var n = allUserLists.length;
-	
-	var selected;
-	
-	r = {
-		
-		elements: elements,
-		
-		clear: function() {
-			obj.html('');
-			elements = [];
-			this.elements = elements;
-			selected = null;
-		},
-		
-		add: function(user) {
-			var i = elements.length;
-			obj.append(
-				'<li><a href="javascript:;" onclick="allUserLists['+n+'].onselect('+i+')">' +
-				'<img class="userlistimg user-' + user.name + '" height="32" width="32" src="' + user.avatar + '">' + user.name + '</a></li>'
-			);
-			return elements.push(user);
-		},
-		
-		getselection: function() {
-			return selected;
-		},
-		
-		onselect: function(i) {
-			obj.find('li').removeClass('active');
-			obj.find('li:eq('+i+')').addClass('active');
-			selected = elements[i];
-		},
-		
-		fromusers: function(users) {
-			this.clear();
-			users.sort(function(a,b) {
-				return a.name>b.name?1:-1;
-			});
-			for(var i=0; i<users.length; i++) {
-				this.add(users[i]);
-			}
-		}
-		
-	};
-	
-	allUserLists.push(r);
-	
-	return r;
-
-}
+var allUserListsAvatar = [];
 
 function userListAvatar(div) {
 
@@ -64,7 +6,7 @@ function userListAvatar(div) {
 	
 	var elements = {};
 	
-	var n = allUserLists.length;
+	var n = allUserListsAvatar.length;
 	
 	r = {
 	
@@ -162,7 +104,7 @@ function userListAvatar(div) {
 		}
 	};
 	
-	allUserLists.push(r);
+	allUserListsAvatar.push(r);
 	
 	return r;
 	

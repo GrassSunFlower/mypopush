@@ -5,7 +5,6 @@ var dirMode = 'owned';
 var newfiletype = 'doc';
 var docshowfilter = function(o){ return true; };
 var filelist;
-var userlist;
 var memberlist;
 var memberlistdoc;
 var movehandler;
@@ -75,6 +74,10 @@ var oldwidth;
 var dochandler;
 var thisPage = "";
 var thisFileState = "owned";
+var selected = -1;
+var filenumber = -1;
+var alluserlists = [];
+var userlist;
 
 (s = ua.match(/msie ([\d.]+)/)) ? Browser.ie = s[1] :
 (s = ua.match(/firefox\/([\d.]+)/)) ? Browser.firefox = s[1] :
@@ -166,6 +169,29 @@ function getdirlink(before) {
 	}
 	return s;
 };
+function translate() {
+	lang = (localStorage.getItem('lang') == 'us-en' ? 'zh-cn' : 'us-en');
+	transinto[lang]();
+	localStorage.setItem('lang', lang);
+
+	$('[localization]').html(function(index, old) {
+		if(strings[$(this).attr('str')])
+			return strings[$(this).attr('str')];
+		return old;
+	});
+	
+	$('[title]').attr('title', function(index, old) {
+		if(strings[$(this).attr('str')])
+			return strings[$(this).attr('str')];
+		return old;
+	});
+
+	if((!Browser.chrome || parseInt(Browser.chrome) < 18) &&
+		(!Browser.opera || parseInt(Browser.opera) < 12)) {
+		$('#voice-on').removeAttr('title');
+		$('#voice-on').attr('data-content', strings['novoice']);
+	}
+}
 var filecontrolscope = null;
 function backto(n) {
 	if(operationLock)
@@ -248,7 +274,50 @@ $(function() {
 
 			}
 		});
+		var UserList = Backbone.Collection.extend({
+			model:UserModel,
+			clear: function(div) {
+				($(div)).html('');
+				for (var i = this.length - 1; i >= 0; i--) {
+					this.pop();
+				};
+				selected = -1;
+				filenumber = -1;
+			},
+			
+			myadd: function(user, div) {
+				n = alluserlists.length;
+				i = this.length;
+				($(div)).append(
+					'<li><a id = "' + n * i + '">'+
+					'<img class="userlistimg user-' + user.name + '" height="32" width="32" src="' + user.avatar + '">' + user.name + '</a></li>'
+				);
+				var currentdiv = '#' + n * i;
+				($(currentdiv)).click(function(event){
+					var m = $(this).attr("id");
+					($("#share-user-list")).find('li').removeClass('active');
+					($("#share-user-list")).find('li:eq('+ m / n+')').addClass('active');
+					filenumber = n;
+					selected = m / n;
+				});
+				this.add([{
+					'name':user.name,
+					'avatar':user.avatar,
+				}]);
+			},
+			
+			fromusers: function(users, div) {
+				this.clear(div);
+				users.sort(function(a,b) {
+					return a.name>b.name?1:-1;
+				});
+				for(var i=0; i<users.length; i++) {
+					userlist.myadd(users[i], div);
+				}
+			}
+		});
 		var testUser = new UserModel();
+		userlist = new UserList();
 		var appView = Backbone.View.extend({
 			loadDone: false,
 			failed: false,
@@ -420,6 +489,7 @@ $(function() {
 				testUser.clear({silent:true});
 				this.removeloading('register-control');
 				this.va.registerLock = false;
+				localStorage.setItem('fisrtreg', 0);
 			},
 			docFunc: function(data) {
 				dochandler(data);
@@ -464,7 +534,7 @@ $(function() {
 			},
 			sharedone: function(data){
 				if(!data.err){
-					userlist.fromusers(data.doc.members);
+					userlist.fromusers(data.doc.members, '#share-user-list');
 				}
 				$('#share-message').hide();
 				this.removeloading('share-buttons');
@@ -1237,14 +1307,16 @@ $(function() {
 			},
 			getString:function() {
 				$('[localization]').html(function(index, old) {
-					$(this).attr('str', old);
+					if($(this).attr('str') == null)
+						$(this).attr('str', old);
 					if(strings[old])
 						return strings[old];
 					return old;
 				});
 				
 				$('[title]').attr('title', function(index, old) {
-					$(this).attr('str', old);
+					if($(this).attr('str') == null)
+						$(this).attr('str', old);
 					if(strings[old])
 						return strings[old];
 					return old;
@@ -1457,6 +1529,25 @@ $(function() {
 					editor.scrollIntoView({line:n, ch:0});
 				}
 				runningline = n;
+			},
+			newcursor: function(content) {
+				var cursor = $(
+					'<div class="cursor">' +
+						'<div class="cursor-not-so-inner">' +
+							'<div class="cursor-inner">' +
+								'<div class="cursor-inner-inner">' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+					).get(0);
+				$(cursor).find('.cursor-inner').popover({
+					html: true,
+					content: '<b>' + content + '</b>',
+					placement: 'bottom',
+					trigger: 'hover'
+				});
+				return cursor;
 			}
 		});
 		var loginView = commonView.extend({
@@ -1831,7 +1922,7 @@ $(function() {
 					$('#share-name').text(o.name);
 					$('#share-inputName').val('');
 					$('#share-message').hide();
-					userlist.fromusers(o.members);
+					userlist.fromusers(o.members, '#share-user-list');
 					$('#share').modal('show');
 					currentsharedoc = o;
 				};
@@ -1881,15 +1972,51 @@ $(function() {
 					}
 					operationLock = false;
 				};
+				fl.onstatistics = function(o) {
+					if(operationLock)
+						return;
+					operationLock = true;
+					var oname = o.path.split('/');
+					oname = oname[oname.length-1];
+					for(var i = 0; i < sharedocs.length; i++) {
+						var docname = sharedocs[i].path.split('/');
+						docname = docname[docname.length-1];
+						if(oname == docname) {
+							if(!sharedocs[i].score) {
+								alert("服务器忙，请稍后再试");
+							}
+							else{
+		
+								var data = [];
+								var labels = [];
+								for (var j = 0; j < sharedocs[i].score.length; j++) {
+									data.push(sharedocs[i].score[j][1]);
+									labels.push(sharedocs[i].score[j][0]);
+								};
+								var bardata = {
+									labels: labels,
+									datasets: [{
+										fillColor: "rgba(220,220,220,0.5)",
+										strokeColor: "rgba(220,220,220,1)",
+										data: data
+									}]
+								}
+					
+								var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Bar(bardata);
+								$('#canvasModal').modal('toggle')
+							}
+						}
+					}
+					operationLock = false;
+				};
 			},
 			initfilecontrol: function() {
 				filelist = fileList('#file-list-table');
 				filelist.clear();
 				this.initfilelistevent(filelist);
-				userlist = userList('#share-user-list');
-				userlist.clear();
+				userlist.clear('#share-user-list');
+				alluserlists.push(userlist);
 				memberlist = userListAvatar('#member-list');
-				memberlistdoc = userListAvatar('#member-list-doc');
 				docshowfilter = this.allselffilter;
 			}
 		});
@@ -2046,21 +2173,22 @@ $(function() {
 					path: currentsharedoc.path,
 					name: name
 				});
+				router.navigate('filelist', { trigger: true });
 			},
 			unshare: function() {
-				var selected = userlist.getselection();
-				if (!selected) {
+				if (selected == -1) {
 					$('#share-error').attr('str', 'selectuser');
 					this.showmessage('share-message', 'selectuser', 'error');
 					return;
 				}
+				var currentselected = alluserlists[filenumber - 1].models[selected];
 				if (operationLock)
 					return;
 				operationLock = true;
 				this.loading('share-buttons');
 				window.app.socket.emit('unshare', {
 					path: currentsharedoc.path,
-					name: selected.name
+					name: currentselected.get('name')
 				});
 			},
 	    });
@@ -2203,7 +2331,6 @@ $(function() {
 					});
 					$('#voice-on').attr('data-content', strings['novoice']);
 				}
-				memberlist = userListAvatar('#member-list');
 				memberlistdoc = userListAvatar('#member-list-doc');
 				resize();
 				$(window).resize(resize);
@@ -2774,6 +2901,10 @@ $(function() {
 				'editor':'editor',
 			},
 			login: function() {
+				if(localStorage.getItem('fisrtreg') == 0) {
+					localStorage.setItem('fisrtreg', 1);
+					window.location.reload();
+				}
 				var flog = true;
 				var temp = testUser.toJSON();
 				for(var i in temp){
@@ -2869,6 +3000,7 @@ $(function() {
 				thisPage = "editor";
 				$('#nav-user-name').text(testUser.get("name"));
 				$('#nav-avatar').attr('src', testUser.get("avatar"));
+				dirMode == 'owned'
 			},
 			clean: function() {
 				if (this.currentView) {
