@@ -10,16 +10,9 @@
 /static/index.html                                index.html
 
 /static/js                                        js文件夹
-        app.js                                        全局js,管理MVC
-        conf.js                                        配置说明
-        Chart.js                                    图表
-        codemirror.js                               codemirror代码编辑框
-        expressionlist.js                           调试变量
+        Chartjs                                   贡献功能模块柱状图
+        userlist.js	                          用户列表
         filelist.js                                 文件列表
-        firebase.js                                 
-        newMultiConection.js                        
-        socket.io.min.js
-        userlist.js
         /new
             /UserModel.js                             Model模型类UserModel和Userlist Collection
             /appView.js                             通用常量View
