@@ -114,10 +114,14 @@ strings = {
 	'voice'                         :'语音',
 	'removeexpression'              :'删除监视',
 	'novoice'                       :'该浏览器不支持语音，请使用<br />Chrome 18+或Opera 12+',
-	'translation'					:'点击此处翻译成英文',
-	'changeword'					:'更改字体',
-	'back-to-login'					:'回到登陆',
-	'download'						:'文件下载',
-	'contribution'					:'查看贡献度'
+	'translation'			:'Click here to translate into English',
+	'changeword'			:'更改字体',
+	'back-to-login'			:'回到登陆',
+	'download'			:'文件下载',
+	'contribution'			:'查看贡献度',
+	'score'				:'贡献度',
+	'profile'			:'个人主页',
+	'filelist'			:'文件列表',
+	'team'				:'一盆小铜钱'
 };
 };
