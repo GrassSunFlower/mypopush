@@ -1027,6 +1027,14 @@ popush.commonView = popush.SocketView.extend({
 				return strings[old];
 			return old;
 		});
+
+		$('[placeholder]').attr('placeholder', function(index, old) {
+			if ($(this).attr('str') == null)
+				$(this).attr('str', old);
+			if (strings[old])
+				return strings[old];
+			return old;
+		});
 	},
 	appendtochatbox: function(name, type, content, time) {
 		$('#chat-show-inner').append(
