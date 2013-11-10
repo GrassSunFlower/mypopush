@@ -353,6 +353,7 @@ popush.filecontrolView = popush.commonView.extend({
 		this.refreshfilelist(function() {;
 		});
 		$('#share').modal('hide');
+		window.location.reload();
 	},
 	// 回车键函数，进行文件和文件夹的共享
 	pressenter_share: function(e) {
