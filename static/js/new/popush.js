@@ -185,6 +185,12 @@ function translate() {
 		return old;
 	});
 
+	$('[placeholder]').attr('placeholder', function(index, old) {
+		if(strings[$(this).attr('str')])
+			return strings[$(this).attr('str')];
+		return old;
+	});
+
 	if((!Browser.chrome || parseInt(Browser.chrome) < 18) &&
 		(!Browser.opera || parseInt(Browser.opera) < 12)) {
 		$('#voice-on').removeAttr('title');
