@@ -39,7 +39,7 @@
             <div>
                 <a href="javascript:translate()" style="text-align:left" localization>translation</a>
             </div>
-            <span>2013 &copy; popush 2.0. Brought to you by <a href="http://www.cnblogs.com/popush-ypxtq/" target="_blank">一盆小铜钱</a></span>
+            <span>2013 &copy; popush 2.0. Brought to you by <a href="http://www.cnblogs.com/popush-ypxtq/" target="_blank" localization>team</a></span>
         </div>
     <script type="text/template" id="loginTemplate">
         <div id="login-box" style="margin-top:220px">
@@ -48,7 +48,7 @@
                 <div class="controls">
                     <div class="input-prepend">
                         <span class="add-on"><i class="icon-user"></i></span>
-                        <input id="login-inputName" type="text" placeholder="Username"  />
+                        <input id="login-inputName" type="text" placeholder="username"  />
                     </div>
                 </div>
             </div>
@@ -56,7 +56,7 @@
                 <div class="controls">
                     <div class="input-prepend">
                         <span class="add-on"><i class="icon-lock"></i></span>
-                        <input id="login-inputPassword" type="password" placeholder="Password" />
+                        <input id="login-inputPassword" type="password" placeholder="password" />
                     </div>
                 </div>
             </div>
@@ -84,21 +84,21 @@
             <div class="control-group">
                 <div class="controls">
                     <div class="input-prepend">
-                        <span class="add-on"><i class="icon-user"></i></span><input id="register-inputName" type="text" placeholder="Username" />
+                        <span class="add-on"><i class="icon-user"></i></span><input id="register-inputName" type="text" placeholder="username" />
                     </div>
                 </div>
             </div>
             <div class="control-group">
                 <div class="controls">
                     <div class="input-prepend">
-                        <span class="add-on"><i class="icon-lock"></i></span><input id="register-inputPassword" type="password" placeholder="Password" />
+                        <span class="add-on"><i class="icon-lock"></i></span><input id="register-inputPassword" type="password" placeholder="password" />
                     </div>
                 </div>
             </div>
             <div class="control-group">
                 <div class="controls">
                     <div class="input-prepend">
-                        <span class="add-on"><i class="icon-lock"></i></span><input id="register-confirmPassword" type="password" placeholder="Repeat-password" />
+                        <span class="add-on"><i class="icon-lock"></i></span><input id="register-confirmPassword" type="password" placeholder="confirm" />
                     </div>
                 </div>
             </div>
@@ -187,15 +187,15 @@
                     <img height="43" width="43" src="#" id="nav-avatar" />
                     <a class="btn btn-large dropdown-toggle" title="Manage Users" href="#" data-toggle="dropdown" data-target="#menu-messages"><i class="icon-user"> </i><span id="nav-user-name">Your Name</span></a>
                     <ul class="dropdown-menu">
-                        <li><a class="sAdd" id="changePassWrd" href="#changepassword" data-toggle="modal">修改密码</a></li>
-                        <li><a class="sInbox" href="#changeavatar" id="changeavatar1" data-toggle="modal">修改头像</a></li>
+                        <li><a class="sAdd" id="changePassWrd" href="#changepassword" data-toggle="modal" localization>changepassword</a></li>
+                        <li><a class="sInbox" href="#changeavatar" id="changeavatar1" data-toggle="modal" localization>changeavatar</a></li>
                     </ul>
-                    <a id="logoutId" href="javascript:;" class="btn btn-large tip-bottom">登出</a>
+                    <a id="logoutId" href="javascript:;" class="btn btn-large tip-bottom" localization>logout</a>
                 </div>
             </div>
             <div id="breadcrumb">
-                <a href="#filelist" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> 个人主页</a>
-                <a href="#filelist" class="current">文件列表</a>
+                <i class="icon-home"></i><a href="#filelist" title="Go to Home" class="tip-bottom" localization>profile</a>
+                <a href="#filelist" class="current" localization>filelist</a>
             </div>
             <div class="container-fluid">
                 <div class="row-fluid">
@@ -369,15 +369,15 @@
                         </a>
                     <a class="btn btn-large dropdown-toggle" title="Manage Users" href="#" data-toggle="dropdown" data-target="#menu-messages"><i class="icon-user"> </i><span id="nav-user-name">Your Name</span></a>
                     <ul class="dropdown-menu">
-                        <li><a class="sAdd" id="changePassWrd" href="#changepassword" data-toggle="modal">修改密码</a></li>
-                        <li><a class="sInbox" href="#changeavatar" id="changeavatar1" data-toggle="modal">修改头像</a></li>
+                        <li><a class="sAdd" id="changePassWrd" href="#changepassword" data-toggle="modal" localization>changepassword</a></li>
+                        <li><a class="sInbox" href="#changeavatar" id="changeavatar1" data-toggle="modal" localization>changeavatar</a></li>
                     </ul>
-                    <a id="logoutId" href="javascript:;" class="btn btn-large tip-bottom">登出</a>
+                    <a id="logoutId" href="javascript:;" class="btn btn-large tip-bottom" localization>logout</a>
                 </div>
             </div>
             <div id="breadcrumb">
-                <a href="#filelist" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> 个人主页</a>
-                <a href="#filelist" class="current">文件列表</a>
+                <i class="icon-home"></i><a href="#filelist" title="Go to Home" class="tip-bottom" localization>profile</a>
+                <a href="#filelist" class="current" localization>filelist</a>
             </div>
                     <div id="editor" class="row-fluid">
             <div class="span9">
@@ -399,12 +399,11 @@
                             <div class="btn-group" id="current-doc-outer">
                                 <div id="breadcrumb">
                                     <p id="current-doc-p">
-                                        <a href="#filelist" class="current">文件列表</a>
+                                        <a href="#filelist" class="current" localization>filelist</a>
                                         <span id="current-doc">current doc</span>
                                         <span class="red" id="current-doc-state" localization>saving...</span>
                                     </p>
                                 </div>
-
                             </div>
                             <div style="clear: both;"></div>
                         </div>
@@ -476,7 +475,7 @@
     <div id="canvasModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="messagedialogLabel" aria-hidden="true" data-backdrop="static">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-            <h3>贡献度</h3>
+            <h3 localization>score</h3>
         </div>
         <div class="modal-body">
             <canvas id="canvas" height="450" width="450"></canvas>
